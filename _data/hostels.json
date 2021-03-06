@@ -1,0 +1,60 @@
+[
+  {
+    "_id": "5d713995b721c3bb38c1f5d0",
+    "user": "5d7a514b5d2c12c7449be045",
+    "name": "City Hostel",
+    "description": "City Hostel located in the heart of Boston is the best surving hostel, a great place to stay ",
+    "phone": "(111) 111-1111",
+    "email": "enroll@cityhostel.com",
+    "address": "233 Bay State Rd Boston MA 02215",
+    "hostelType": "maleHostel",
+    "city": "Lahore",
+    "town": "Johar town",
+    "latitude": "72.0",
+    "longitude": "47.0"
+  },
+  {
+    "_id": "5d713a66ec8f2b88b8f830b8",
+    "user": "5d7a514b5d2c12c7449be046",
+    "name": "Universal Hostal",
+    "description": "Universal Hostal has one goal, and that is to give you a clean, calm environment. We provide fresh and clean meal",
+    "phone": "(222) 222-2222",
+    "email": "enroll@moderntech.com",
+    "address": "220 Pawtucket St, Lowell, MA 01854",
+   
+    "hostelType": "maleHostel",
+    "city": "Rawalpindi",
+    "town": "settelite Town",
+    "latitude": "79.0",
+    "longitude": "49.0"
+  },
+  {
+    "_id": "5d725a037b292f5f8ceff787",
+    "user": "5c8a1d5b0190b214360dc031",
+    "name": "Ali Hostel",
+    "description": "We provide good quality meal three times a day. Do you want fast internet? Ali Hostel will give you fast internet speed vailable 24/7.",
+    "phone": "(333) 333-3333",
+    "email": "enroll@alihostel.com",
+    "address": "85 South Prospect Street Burlington VT 05405",
+    "hostelType": "femaleHostel",
+    "city": "Karachi",
+    "town": "Faisal Town",
+    "latitude": "65.0",
+    "longitude": "34.0"
+  },
+  {
+    "_id": "5d725a1b7b292f5f8ceff788",
+    "user": "5c8a1d5b0190b214360dc032",
+    "name": "Dubai Boys Hostel",
+    "description": "We serve best meal three times a day. cleanliness is our passion. we do not compromise on quality",
+    "phone": "(444) 444-4444",
+    "email": "enroll@dubaiboyshostel.com",
+    "address": "45 Upper College Rd Kingston RI 02881",
+   
+    "hostelType": "femaleHostel",
+    "city": "Lahore",
+    "town": "Model Town",
+    "latitude": "70.0",
+    "longitude": "56.0"
+  }
+]

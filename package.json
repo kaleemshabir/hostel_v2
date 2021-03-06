@@ -1,0 +1,30 @@
+{
+  "name": "hostel_v1",
+  "version": "1.0.0",
+  "description": "Hostel backend API",
+  "main": "server.js",
+  "scripts": {
+    "start": "SET NODE_ENV=production & node server",
+    "dev": "nodemon server"
+  },
+  "author": "Kaleem Ullah",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.23.0",
+    "colors": "^1.4.0",
+    "cookie-parser": "^1.4.5",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.0",
+    "multer": "^1.4.2",
+    "node-geocoder": "^3.27.0",
+    "slugify": "^1.4.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
