@@ -160,8 +160,7 @@ exports.deleteRoom = asyncHandler(async (req, res, next) => {
 //@access Public
 exports.BookRoom = async (req, res, next) => {
   // const {title, body} = req.body;
-  const title = "Room Book";
-  const body = "Room booked ";
+ 
   let room = await Room.findById(req.params.id);
   if (room.roommats.includes(req.user.id)) {
     return res
@@ -214,9 +213,11 @@ exports.BookRoom = async (req, res, next) => {
       message: "Room booked successfully",
     });
   } else {
-    return res.status(400).json({
-      success: false,
-      message: "Room already full, try another",
-    });
+    return next(new ErrorResponse("Room Already booked", 400));
+
+    // return res.status(400).json({
+    //   success: false,
+    //   message: "Room already full, try another",
+    // });
   }
 };
