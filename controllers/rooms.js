@@ -213,11 +213,11 @@ exports.BookRoom = async (req, res, next) => {
       message: "Room booked successfully",
     });
   } else {
-    // return next(new ErrorResponse("Room Already booked", 401));
+    return next(new ErrorResponse("Room Already booked", 400));
 
-    return {
-      success: false,
-      message: "Room already full, try another",
-    };
+    // return {
+    //   success: false,
+    //   message: "Room already full, try another",
+    // };
   }
 };
