@@ -7,7 +7,11 @@ const Hostel = require("../models/Hostel");
 const admin = require("firebase-admin");
 const Notification = require("../models/Notification");
 const User = require("../models/User");
+const serviceAccount = require("../feroshgah.json");
 
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
 // @desc        Get all rooms
 // @route       GET /api/v1/rooms
@@ -156,11 +160,13 @@ exports.deleteRoom = asyncHandler(async (req, res, next) => {
 //@access Public
 exports.BookRoom = async (req, res, next) => {
   // const {title, body} = req.body;
-  const title ="Room Book";
-  const body ="Room booked ";
+  const title = "Room Book";
+  const body = "Room booked ";
   let room = await Room.findById(req.params.id);
-  if(room.roommats.includes(req.user.id)) {
-    return res.status(400).json({success:false, message:"Already booked this room"})
+  if (room.roommats.includes(req.user.id)) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Already booked this room" });
   }
   if (!room) {
     return next(new ErrorResponse(`Room not found with this ${req.params.id}`));
@@ -178,37 +184,37 @@ exports.BookRoom = async (req, res, next) => {
     // );
     room.roommats.push(req.user.id);
     await room.save();
-    console.log(room);
 
     if (!room) {
       return next(new ErrorResponse("Room not booked", 400));
     }
-    const hostelId= room.hostel;
+    const hostelId = room.hostel;
     let hostelOwner;
-    const hostel= await Hostel.findById(hostelId);
-    if(hostel) {
-hostelOwner = hostel.user;
+    const hostel = await Hostel.findById(hostelId);
+    if (hostel) {
+      hostelOwner = hostel.user;
     }
     const user = await User.findById(hostelOwner);
 
-
-    const token = await user.fcmToken;
-    await admin.messaging().send({
-     
+    // const token =  user.fcmToken;
+    var payload = {
       notification: {
-        title,
-        body
-      },
-      token,
-    });
+        title: "Room Booking",
+        body: `There is room booking request from, ${req.user.name}`
+      }
+    };
+    const token = 'efzhD-QFTMOaVEp9rHmZ97:APA91bHXl-9TkUr4x36LRnC-YOVGDhLU392LdjkiE9rJsPdwOaL7fp2KJsY3ly3AZiEtxiMbbDNHYN0i-229Y4rScEKqJNmO1otoyYetUzHluNXQSAgzA4ubMw3CRaqXHW_uWAaYKKRk';
+     await admin.messaging().sendToDevice( token,
+    payload
+    );
     return res.status(201).json({
       success: true,
       message: "Room booked successfully",
     });
-  }else {
+  } else {
     return res.status(400).json({
-      success:false,
-     message: "Room already full, try another"
-    })
+      success: false,
+      message: "Room already full, try another",
+    });
   }
 };
