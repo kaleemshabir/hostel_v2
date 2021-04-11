@@ -26,6 +26,10 @@ const UserSchema = new mongoose.Schema({
   photo: {
     type: String,
   },
+  fcmToken: {
+    type: String,
+    default:""
+  },
   
   password: {
     type: String,

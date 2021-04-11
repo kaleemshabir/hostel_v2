@@ -6,6 +6,13 @@ const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/error');
 const colors = require('colors');
+const  cors = require("cors");
+const admin = require("firebase-admin");
+const serviceAccount = require("./feroshgah.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 // Load env variables
 dotenv.config({ path: './config/config.env' });
 
@@ -28,6 +35,7 @@ const jobs = require('./routes/jobs');
 
 // Body parser
 app.use(express.json());
+app.use(cors());
 
 // Cookie parser
 app.use(cookieParser());

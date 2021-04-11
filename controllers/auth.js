@@ -3,7 +3,12 @@ const asyncHandler = require('../middleware/async');
 const ErrorResponse = require('../utils/errorResponse');
 const User = require('../models/User');
 const Shop = require('../models/Shop');
-
+// const serviceAccount = require("../feroshgah.json");
+const Notification = require("../models/Notification");
+const admin = require("firebase-admin");
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount)
+// })
 // @desc        Register user
 // @route       POST /api/v1/auth/register
 // @access      Public
@@ -25,7 +30,8 @@ exports.register = asyncHandler(async (req, res, next) => {
 // @route       POST /api/v1/auth/login
 // @access      Public
 exports.login = asyncHandler(async (req, res, next) => {
-  const { email, password } = req.body;
+  const { email, password, fcmToken } = req.body;
+
 
   // Validate emial & password
   if (!email || !password) {
@@ -44,6 +50,8 @@ exports.login = asyncHandler(async (req, res, next) => {
   if (!isMatch) {
     next(new ErrorResponse('Invalid credetials ', 401));
   }
+  user.fcmToken = fcmToken;
+  await user.save();
 
   sendTokenResponse(user, 200, res);
 });
@@ -63,6 +71,7 @@ const sendTokenResponse = (user, statusCode, res) => {
   if (process.env.NODE_ENV === 'production') {
     options.secure = true;
   }
+
 
   res.status(statusCode).cookie('token', token, options).json({
     success: true,

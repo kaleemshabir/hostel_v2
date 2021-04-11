@@ -4,6 +4,10 @@ var multer = require("multer");
 var fs = require("fs");
 const Room = require("../models/Room");
 const Hostel = require("../models/Hostel");
+const admin = require("firebase-admin");
+const Notification = require("../models/Notification");
+const User = require("../models/User");
+
 
 // @desc        Get all rooms
 // @route       GET /api/v1/rooms
@@ -151,6 +155,9 @@ exports.deleteRoom = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/rooms/:id/book
 //@access Public
 exports.BookRoom = async (req, res, next) => {
+  // const {title, body} = req.body;
+  const title ="Room Book";
+  const body ="Room booked ";
   let room = await Room.findById(req.params.id);
   if(room.roommats.includes(req.user.id)) {
     return res.status(400).json({success:false, message:"Already booked this room"})
@@ -176,6 +183,24 @@ exports.BookRoom = async (req, res, next) => {
     if (!room) {
       return next(new ErrorResponse("Room not booked", 400));
     }
+    const hostelId= room.hostel;
+    let hostelOwner;
+    const hostel= await Hostel.findById(hostelId);
+    if(hostel) {
+hostelOwner = hostel.user;
+    }
+    const user = await User.findById(hostelOwner);
+
+
+    const token = await user.fcmToken;
+    await admin.messaging().send({
+     
+      notification: {
+        title,
+        body
+      },
+      token,
+    });
     return res.status(201).json({
       success: true,
       message: "Room booked successfully",
