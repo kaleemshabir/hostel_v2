@@ -3,12 +3,8 @@ const asyncHandler = require('../middleware/async');
 const ErrorResponse = require('../utils/errorResponse');
 const User = require('../models/User');
 const Shop = require('../models/Shop');
-// const serviceAccount = require("../feroshgah.json");
-const Notification = require("../models/Notification");
-const admin = require("firebase-admin");
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount)
-// })
+
+
 // @desc        Register user
 // @route       POST /api/v1/auth/register
 // @access      Public

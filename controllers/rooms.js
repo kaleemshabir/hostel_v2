@@ -10,7 +10,7 @@ const User = require("../models/User");
 const serviceAccount = require("../feroshgah.json");
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
 });
 
 // @desc        Get all rooms
@@ -195,18 +195,19 @@ exports.BookRoom = async (req, res, next) => {
       hostelOwner = hostel.user;
     }
     const user = await User.findById(hostelOwner);
-
+ await Notification.create({
+  user: req.user.id
+});
     // const token =  user.fcmToken;
     var payload = {
       notification: {
         title: "Room Booking",
-        body: `There is room booking request from, ${req.user.name}`
-      }
+        body: `There is room booking request from, ${req.user.name}`,
+      },
     };
-    const token = 'efzhD-QFTMOaVEp9rHmZ97:APA91bHXl-9TkUr4x36LRnC-YOVGDhLU392LdjkiE9rJsPdwOaL7fp2KJsY3ly3AZiEtxiMbbDNHYN0i-229Y4rScEKqJNmO1otoyYetUzHluNXQSAgzA4ubMw3CRaqXHW_uWAaYKKRk';
-     await admin.messaging().sendToDevice( token,
-    payload
-    );
+    const token =
+      "efzhD-QFTMOaVEp9rHmZ97:APA91bHXl-9TkUr4x36LRnC-YOVGDhLU392LdjkiE9rJsPdwOaL7fp2KJsY3ly3AZiEtxiMbbDNHYN0i-229Y4rScEKqJNmO1otoyYetUzHluNXQSAgzA4ubMw3CRaqXHW_uWAaYKKRk";
+    await admin.messaging().sendToDevice(token, payload);
     return res.status(201).json({
       success: true,
       message: "Room booked successfully",
