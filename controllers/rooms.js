@@ -213,7 +213,7 @@ exports.BookRoom = async (req, res, next) => {
       message: "Room booked successfully",
     });
   } else {
-    return next(new ErrorResponse("Room Already booked", 400));
+    return next(new ErrorResponse("Room Already booked", 401));
 
     // return res.status(400).json({
     //   success: false,
