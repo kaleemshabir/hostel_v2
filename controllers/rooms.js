@@ -195,10 +195,10 @@ exports.BookRoom = async (req, res, next) => {
       hostelOwner = hostel.user;
     }
     const user = await User.findById(hostelOwner);
- await Notification.create({
-  user: req.user.id
-});
-    // const token =  user.fcmToken;
+    await Notification.create({
+      user: req.user.id,
+    });
+    // const token = user.fcmToken;
     var payload = {
       notification: {
         title: "Room Booking",
@@ -206,8 +206,9 @@ exports.BookRoom = async (req, res, next) => {
       },
     };
     const token =
-      "efzhD-QFTMOaVEp9rHmZ97:APA91bHXl-9TkUr4x36LRnC-YOVGDhLU392LdjkiE9rJsPdwOaL7fp2KJsY3ly3AZiEtxiMbbDNHYN0i-229Y4rScEKqJNmO1otoyYetUzHluNXQSAgzA4ubMw3CRaqXHW_uWAaYKKRk";
+      "cTwmHKhqRSyuvUfY9KdG9-:APA91bFlslBumNDuKiStZpVippsUOcSUY1bnKp9egjPAaVzU7cCR-HPX0IJilneSo_bkZ0bV_trq06fTTRAevqvy6EfhTcoBO8yJL4FocQ_P46rt_EUoTsM4_hWl47yc20hNQCzikdsT";
     await admin.messaging().sendToDevice(token, payload);
+
     return res.status(201).json({
       success: true,
       message: "Room booked successfully",
