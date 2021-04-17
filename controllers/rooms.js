@@ -196,7 +196,8 @@ exports.BookRoom = async (req, res, next) => {
     const user = await User.findById(hostelOwner);
     await Notification.create({
       user: req.user.id,
-      publisher: hostel.user
+      publisher: hostel.user,
+      room: room.roomNumber
     });
     // const token = user.fcmToken;
     var payload = {
@@ -224,7 +225,10 @@ exports.BookRoom = async (req, res, next) => {
 };
 
 exports.getNotifications = async(req, res, next) => {
- const notifications = await Notification.find({publisher:req.user.id});
+ const notifications = await Notification.find({publisher:req.user.id}).populate({
+   path: "user",
+   select: "name, email"
+ });
  return res.status(200).json({
   success: true,
   message: "Notifications found successfully",
