@@ -226,7 +226,7 @@ exports.BookRoom = async (req, res, next) => {
 
 exports.getNotifications = async(req, res, next) => {
  const notifications = await Notification.find({publisher:req.user.id}).populate({
-   path: "user",
+   path: "publisher",
    select: "name, email"
  });
  return res.status(200).json({

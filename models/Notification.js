@@ -5,6 +5,9 @@ const NotificationSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref:"User"
   },
+  roomNumber: {
+    
+  },
   publisher: {
     type: mongoose.Schema.ObjectId,
     ref: "User"
