@@ -42,9 +42,10 @@ exports.login = asyncHandler(async (req, res, next) => {
 
   // Check if password matches
   const isMatch = await user.matchPassword(password);
+  console.log(isMatch);
 
   if (!isMatch) {
-    next(new ErrorResponse('Invalid credetials ', 401));
+    return next(new ErrorResponse('Invalid credetials ', 401));
   }
   user.fcmToken = fcmToken;
   await user.save();
