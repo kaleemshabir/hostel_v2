@@ -171,7 +171,7 @@ exports.BookRoom = async (req, res, next) => {
     return next(new ErrorResponse(`Room not found with this ${req.params.id}`));
   }
   // room.roommats.length < room.seater
-  if (room.roommats.length < room.seater) {
+  if (room.roommats.length <= room.seater) {
     // room = await Room.findByIdAndUpdate(
     //   req.user.id,
     //   // { $push: { roommats: req.user.id } },
@@ -196,6 +196,7 @@ exports.BookRoom = async (req, res, next) => {
     const user = await User.findById(hostelOwner);
     await Notification.create({
       user: req.user.id,
+      publisher: hostel.user
     });
     // const token = user.fcmToken;
     var payload = {
@@ -213,7 +214,7 @@ exports.BookRoom = async (req, res, next) => {
       message: "Room booked successfully",
     });
   } else {
-    return next(new ErrorResponse("Room Already booked", 400));
+    return next(new ErrorResponse(" This Room already full, try another ", 400));
 
     // return {
     //   success: false,
@@ -221,3 +222,12 @@ exports.BookRoom = async (req, res, next) => {
     // };
   }
 };
+
+exports.getNotifications = async(req, res, next) => {
+ const notifications = await Notification.find({publisher:req.user.id});
+ return res.status(200).json({
+  success: true,
+  message: "Notifications found successfully",
+  data: notifications
+});
+}
