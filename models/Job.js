@@ -5,6 +5,12 @@ const JobSchema = new mongoose.Schema({
     type: String,
     required:[true, "Please add title"]
   },
+  salary: {
+    type: Number
+  },
+  address: {
+    type: String
+  },
 
   description: {
     type: String,

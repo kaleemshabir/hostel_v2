@@ -10,6 +10,7 @@
   "author": "Kaleem Ullah",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.23.0",
     "colors": "^1.4.0",

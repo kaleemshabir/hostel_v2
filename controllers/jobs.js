@@ -163,6 +163,12 @@ exports.search = asyncHandler(async (req, res, next) => {
       {
         description: { $regex: req.query.search, $options: "i" },
       },
+      {
+        address: { $regex: req.query.search, $options: "i" },
+      },
+      {
+        salary: { $regex: req.query.search, $options: "i" },
+      },
     ],
   };
 
