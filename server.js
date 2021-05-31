@@ -30,6 +30,7 @@ const shopReviews = require('./routes/shopReview');
 const shops = require('./routes/shops');
 const products = require('./routes/products');
 const jobs = require('./routes/jobs');
+const braintree = require('./routes/braintree');
 
 //app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -53,6 +54,7 @@ app.use('/api/v1/shops', shops);
 app.use('/api/v1/products', products);
 app.use('/api/v1/shop-review', shopReviews);
 app.use('/api/v1/jobs', jobs);
+app.use('/api/v1/braintree', braintree);
 
 app.use(errorHandler);
 
