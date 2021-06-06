@@ -1,5 +1,5 @@
 const express = require("express");
-const { generateToken } = require("../controllers/braintree");
+const { generateToken, processPayment } = require("../controllers/braintree");
 
 const router = express.Router();
 
