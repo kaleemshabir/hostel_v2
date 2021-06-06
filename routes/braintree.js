@@ -10,5 +10,10 @@ router.route("/get-token").get(
 
   generateToken
 );
+router.route("/payment").post(
+  protect,
+
+  processPayment
+);
 
 module.exports = router;

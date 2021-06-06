@@ -13,11 +13,31 @@ exports.generateToken = asyncHandler(async(req, res, next) => {
 
   });
   if(!clientToken) {
-    new ErrorResponse("Token not returned by braintree, try again", 404);
+   return new ErrorResponse("Token not returned by braintree, try again", 404);
   }
   return res.status(200).json({
     success: true,
     clientToken
   });
 
+});
+
+exports.processPayment = asyncHandler(async(req, res, next) => {
+  const nonceFromTheClient = req.body.paymentMethodNonce;
+  const amount = req.body.amount;
+  const newTransaction = await gateway.transaction.sale({
+    amount:amount,
+    paymentMethodNonce:nonceFromTheClient,
+    options:{
+      submitForSettlement:true
+    }
+  });
+
+  if(!newTransaction){
+   return new ErrorResponse("Token not returned by braintree, try again", 400);
+  }
+  return res.status(200).json({
+    success:true,
+    message: "Your payment was successfull"
+  })
 })

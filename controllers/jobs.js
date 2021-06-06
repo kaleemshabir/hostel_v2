@@ -46,6 +46,10 @@ exports.postJob = asyncHandler(async (req, res, next) => {
   const data = {
     title: req.body.title,
     description: req.body.description,
+    experience: req.body.experience,
+    salary: req.body.salary,
+    jobType: req.body.jobType,
+    address: req.body.address,
     postedBy: req.body.postedBy,
   };
   let job = await Job.create(data);
