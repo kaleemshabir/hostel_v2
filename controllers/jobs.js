@@ -175,6 +175,15 @@ exports.search = asyncHandler(async (req, res, next) => {
       {
         salary: { $regex: req.query.search, $options: "i" },
       },
+      {
+        jobType: { $regex: req.query.search, $options: "i" },
+      },
+      {
+        employmentType: { $regex: req.query.search, $options: "i" },
+      },
+      {
+        company: { $regex: req.query.search, $options: "i" },
+      },
     ],
   };
 
