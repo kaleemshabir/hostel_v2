@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
 const JobSchema = new mongoose.Schema({
+  employmentType: {
+    type: String
+  },
   company: {
     type: String
   },
