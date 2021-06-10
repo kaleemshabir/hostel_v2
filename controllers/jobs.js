@@ -6,7 +6,7 @@ const Job = require("../models/Job");
 // @route       GET /api/v1/jobs
 // @access      Public
 exports.getJobs = asyncHandler(async (req, res, next) => {
-  const jobs = await Job.find({}).sort([[("created_at", -1)]]);
+  const jobs = await Job.find({}).select("-appliers").sort([[("created_at", -1)]]);
   if (!jobs) {
     return next(new ErrorResponse("No job found", 404));
   }
@@ -131,14 +131,35 @@ exports.deleteJob = asyncHandler(async (req, res, next) => {
 //@access Public
 exports.apply = asyncHandler(async (req, res, next) => {
   req.body.user = req.user.id;
+  const cv = req.body.filename;
+  if (req.body.isUser === false) {
+    return {
+      message: " User not found ",
+      error: "ResourceNotFound"
+    };
+  }
+  if (req.body.isCv === false) {
+    return {
+      message: " Upload only pdf file",
+      error: "ResourceNotFound"
+    };
+  }
+  
+    if (!cv) {
+      return {
+        message: "CV file not found ",
+        error: "ResourceNotFound"
+      };
+    }
   let job = await Job.findById(req.params.id);
   if (!job) {
     return next(new ErrorResponse(`Job not found with this ${req.params.id}`));
   }
   const data = {
-    cv: req.body.cv,
+    cv: cv,
     user: req.body.user,
   };
+  console.log("**");
   if (job.postedBy.toString() == req.user.id) {
     return next(new ErrorResponse(`Owner cannot apply for job`, 400));
   }

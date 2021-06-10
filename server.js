@@ -43,7 +43,7 @@ app.use(cookieParser());
 
 // Set static folder
 //app.use(express.static(path.join(__dirname, 'public')));
-
+app.use("/api/v1/static", express.static(path.join(__dirname, "public/cv")));
 // Mount routers
 app.use('/api/v1/hostels', hostels);
 app.use('/api/v1/rooms', rooms);
