@@ -25,13 +25,14 @@ exports.getJob = asyncHandler(async (req, res, next) => {
     path: "postedBy",
     select: "name email",
   });
+  
 
   if (!job) {
     return next(
       new ErrorResponse(`No job found with the id of ${req.params.id}`, 404)
     );
   }
-
+  job.appliers= undefined;
   res.status(200).json({
     success: true,
     data: job,
@@ -159,7 +160,6 @@ exports.apply = asyncHandler(async (req, res, next) => {
     cv: cv,
     user: req.body.user,
   };
-  console.log("**");
   if (job.postedBy.toString() == req.user.id) {
     return next(new ErrorResponse(`Owner cannot apply for job`, 400));
   }
@@ -208,7 +208,7 @@ exports.search = asyncHandler(async (req, res, next) => {
     ],
   };
 
-  const jobs = await Job.find(query)
+  const jobs = await Job.find(query).select("-appliers")
     .sort([["created_at", -1]])
     .lean();
 
