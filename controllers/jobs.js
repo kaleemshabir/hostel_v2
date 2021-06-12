@@ -177,7 +177,8 @@ exports.apply = asyncHandler(async (req, res, next) => {
     cv,
     user: req.body.user,
     photo,
-    email
+    email,
+    name
   };
   if (job.postedBy.toString() == req.user.id) {
     return next(new ErrorResponse(`Owner cannot apply for job`, 400));
