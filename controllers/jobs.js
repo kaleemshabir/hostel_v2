@@ -16,6 +16,17 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
     data: jobs,
   });
 });
+exports.getJobsOwner = asyncHandler(async (req, res, next) => {
+  const jobs = await Job.find({postedBy:req.user.id}).sort([[("created_at", -1)]]);
+  if (!jobs) {
+    return next(new ErrorResponse("No job found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    data: jobs,
+  });
+});
 
 // @desc        Get single job
 // @route       GET /api/v1/jobs/:id

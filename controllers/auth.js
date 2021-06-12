@@ -3,6 +3,7 @@ const asyncHandler = require('../middleware/async');
 const ErrorResponse = require('../utils/errorResponse');
 const User = require('../models/User');
 const Shop = require('../models/Shop');
+const Job = require('../models/Job');
 
 
 // @desc        Register user
@@ -84,7 +85,8 @@ exports.getMe = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id);
    const hostel = await Hostel.findOne({user: req.user.id});
    const shop = await Shop.findOne({user: req.user.id});
-  res.status(200).json({ success: true, data:{ user, hostel, shop}} );
+   const job = await Job.findOne({postedBy: req.user.id});
+  res.status(200).json({ success: true, data:{ user, hostel, shop, job}} );
 });
 
 // @desc        Update user details

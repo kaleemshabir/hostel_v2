@@ -9,7 +9,8 @@ const {
   updateJob,
   deleteJob,
   apply,
-  search
+  search,
+  getJobsOwner
 } = require('../controllers/jobs');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -69,6 +70,7 @@ router
   .delete(protect,deleteJob);
 
   router.route('/:id/apply').post(protect, upload.single("file"), apply);
+  router.route('/my-jobs').post(protect, getJobsOwner);
   
 
 module.exports = router;
