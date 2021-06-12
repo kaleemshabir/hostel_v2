@@ -155,7 +155,7 @@ exports.apply = asyncHandler(async (req, res, next) => {
   req.body.user = req.user.id;
   const photo = req.user.photo;
   const cv = req.body.filename;
-  let cv;
+  // let cv;
   const name = req.user.name;
   const email = req.user.email;
   if (req.body.isUser === false) {
