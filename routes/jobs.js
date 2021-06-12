@@ -12,59 +12,59 @@ const {
   search,
   getJobsOwner
 } = require('../controllers/jobs');
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "./public/cv");
-//   },
-//   filename: (req, file, cb) => {
-//     const ext = file.mimetype.split("/")[1];
-//     req.body.filename = `${req.user._id}.${ext}`;
-//     cb(null, req.body.filename);
-//   }
-// });
-// const upload = multer({
-//   storage,
-//   fileFilter: async (_req, file, cb) => {
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./public/cv");
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split("/")[1];
+    req.body.filename = `${req.user._id}.${ext}`;
+    cb(null, req.body.filename);
+  }
+});
+const upload = multer({
+  storage,
+  fileFilter: async (_req, file, cb) => {
   
 
-//     let callback;
-//     if (file.mimetype.split("/")[1] === "pdf") {
+    let callback;
+    if (file.mimetype.split("/")[1] === "pdf") {
      
-//       const user = await User.findOne({
-//         _id: _req.user._id
-//       });
+      const user = await User.findOne({
+        _id: _req.user._id
+      });
     
-//       if (!user) {
-//         _req.body.isUser = false;
-//         callback = cb(null, _req.body.isUser);
-//       } else {
+      if (!user) {
+        _req.body.isUser = false;
+        callback = cb(null, _req.body.isUser);
+      } else {
         
-//         callback = cb(null, true);
-//       }
-//     } else {
-//       _req.body.isCv = false;
-//       callback = cb(null, _req.body.isCv);
-//     }
-//     return callback;
-//   }
-// });
-
-var storage = multer.diskStorage({
-  filename: function (req, file, callback) {
-    const ext = file.mimetype.split("/")[1];
-        req.body.filename = `${req.user._id}.${ext}`;
-       const  name = `${req.user._id}.${ext}`;
-    callback(null, name);
-  },
-});
-var imageFilter = function (req, file, cb) {
-  // accept image files only
-  if (!file.originalname.match(/\.(jpg|jpeg|png|gif|pdf)$/i)) {
-    return cb(new Error('Only image files and pdf files are allowed!'), false);
+        callback = cb(null, true);
+      }
+    } else {
+      _req.body.isCv = false;
+      callback = cb(null, _req.body.isCv);
+    }
+    return callback;
   }
-  cb(null, true);
-};
-var upload = multer({ storage: storage, fileFilter: imageFilter });
+});
+
+// var storage = multer.diskStorage({
+//   filename: function (req, file, callback) {
+//     const ext = file.mimetype.split("/")[1];
+//         req.body.filename = `${req.user._id}.${ext}`;
+//        const  name = `${req.user._id}.${ext}`;
+//     callback(null, name);
+//   },
+// });
+// var imageFilter = function (req, file, cb) {
+//   // accept image files only
+//   if (!file.originalname.match(/\.(jpg|jpeg|png|gif|pdf)$/i)) {
+//     return cb(new Error('Only image files and pdf files are allowed!'), false);
+//   }
+//   cb(null, true);
+// };
+// var upload = multer({ storage: storage, fileFilter: imageFilter });
 
 const router = express.Router();
 

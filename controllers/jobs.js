@@ -2,6 +2,7 @@ const asyncHandler = require("../middleware/async");
 const ErrorResponse = require("../utils/errorResponse");
 const Job = require("../models/Job");
 const cloudinary = require("cloudinary");
+// var PDFImage = require("pdf-image").PDFImage;
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -153,7 +154,7 @@ exports.deleteJob = asyncHandler(async (req, res, next) => {
 exports.apply = asyncHandler(async (req, res, next) => {
   req.body.user = req.user.id;
   const photo = req.user.photo;
-  // const cv = req.body.filename;
+  const cv = req.body.filename;
   let cv;
   const name = req.user.name;
   const email = req.user.email;
@@ -170,17 +171,21 @@ exports.apply = asyncHandler(async (req, res, next) => {
     };
   }
   
-    // if (!cv) {
-    //   return {
-    //     message: "CV file not found ",
-    //     error: "ResourceNotFound"
-    //   };
-    // }
+    if (!cv) {
+      return {
+        message: "CV file not found ",
+        error: "ResourceNotFound"
+      };
+    }
   let job = await Job.findById(req.params.id);
   if (!job) {
     return next(new ErrorResponse(`Job not found with this ${req.params.id}`));
   }
-  cloudinary.uploader.upload(req.file.path, async function (result) {
+
+// var pdfImage = new PDFImage(req.file.path);
+// const path = await pdfImage.convertPage(0);
+// console.log(path)
+  cloudinary.uploader.upload(path, async function (result) {
     // add cloudinary url for the image to the campground object under image property
     cv = result.secure_url;
     const data = {
@@ -211,6 +216,8 @@ exports.apply = asyncHandler(async (req, res, next) => {
     });
    
   });
+  
+
  
 });
 
