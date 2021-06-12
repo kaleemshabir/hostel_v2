@@ -6,7 +6,7 @@ const Job = require("../models/Job");
 // @route       GET /api/v1/jobs
 // @access      Public
 exports.getJobs = asyncHandler(async (req, res, next) => {
-  const jobs = await Job.find({}).select("-appliers").sort([[("created_at", -1)]]);
+  const jobs = await Job.find({}).sort([[("created_at", -1)]]);
   if (!jobs) {
     return next(new ErrorResponse("No job found", 404));
   }
