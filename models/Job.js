@@ -40,6 +40,9 @@ default:""
         type: mongoose.Schema.ObjectId,
         ref: "User",
       },
+      name:String,
+      email:String,
+      photo: String,
       cv: {
         type: String,
         required: true

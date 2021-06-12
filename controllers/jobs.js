@@ -146,7 +146,10 @@ exports.deleteJob = asyncHandler(async (req, res, next) => {
 //@access Public
 exports.apply = asyncHandler(async (req, res, next) => {
   req.body.user = req.user.id;
+  const photo = req.user.photo;
   const cv = req.body.filename;
+  const name = req.user.name;
+  const email = req.user.email;
   if (req.body.isUser === false) {
     return {
       message: " User not found ",
@@ -171,8 +174,10 @@ exports.apply = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Job not found with this ${req.params.id}`));
   }
   const data = {
-    cv: cv,
+    cv,
     user: req.body.user,
+    photo,
+    email
   };
   if (job.postedBy.toString() == req.user.id) {
     return next(new ErrorResponse(`Owner cannot apply for job`, 400));
