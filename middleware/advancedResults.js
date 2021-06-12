@@ -79,7 +79,6 @@ if(copy.length > 0 ) {
   // const total = await model.countDocuments();
 
   // query = query.skip(startIndex).limit(limit);
-  console.log(populate);
 
   // if (populate) {
   //   query = await query.populate(populate);
