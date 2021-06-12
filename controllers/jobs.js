@@ -147,7 +147,8 @@ exports.deleteJob = asyncHandler(async (req, res, next) => {
 exports.apply = asyncHandler(async (req, res, next) => {
   req.body.user = req.user.id;
   const photo = req.user.photo;
-  const cv = req.body.filename;
+  // const cv = req.body.filename;
+  let cv;
   const name = req.user.name;
   const email = req.user.email;
   if (req.body.isUser === false) {
@@ -163,42 +164,48 @@ exports.apply = asyncHandler(async (req, res, next) => {
     };
   }
   
-    if (!cv) {
-      return {
-        message: "CV file not found ",
-        error: "ResourceNotFound"
-      };
-    }
+    // if (!cv) {
+    //   return {
+    //     message: "CV file not found ",
+    //     error: "ResourceNotFound"
+    //   };
+    // }
   let job = await Job.findById(req.params.id);
   if (!job) {
     return next(new ErrorResponse(`Job not found with this ${req.params.id}`));
   }
-  const data = {
-    cv,
-    user: req.body.user,
-    photo,
-    email,
-    name
-  };
-  if (job.postedBy.toString() == req.user.id) {
-    return next(new ErrorResponse(`Owner cannot apply for job`, 400));
-  }
-  const found = job.appliers.find((x) => x.user.toString() == req.user.id);
-  if (found && found.user == req.user.id) {
-    return next(new ErrorResponse(`Already applied for this job`, 400));
-    
-  }
-
-  job.appliers.push(data);
-  await job.save();
-
-  if (!job) {
-    return next(new ErrorResponse(`Can't apply for job`, 400));
-  }
-  return res.status(201).json({
-    success: true,
-    message: " you successfully applied  for this job ",
+  cloudinary.uploader.upload(req.file.path, async function (result) {
+    // add cloudinary url for the image to the campground object under image property
+    cv = result.secure_url;
+    const data = {
+      cv,
+      user: req.body.user,
+      photo,
+      email,
+      name
+    };
+    if (job.postedBy.toString() == req.user.id) {
+      return next(new ErrorResponse(`Owner cannot apply for job`, 400));
+    }
+    const found = job.appliers.find((x) => x.user.toString() == req.user.id);
+    if (found && found.user == req.user.id) {
+      return next(new ErrorResponse(`Already applied for this job`, 400));
+      
+    }
+  
+    job.appliers.push(data);
+    await job.save();
+  
+    if (!job) {
+      return next(new ErrorResponse(`Can't apply for job`, 400));
+    }
+    return res.status(201).json({
+      success: true,
+      message: " you successfully applied  for this job ",
+    });
+   
   });
+ 
 });
 
 //@desc   search jobs
