@@ -70,7 +70,7 @@ router
   .delete(protect,deleteJob);
 
   router.route('/:id/apply').post(protect, upload.single("file"), apply);
-  router.route('/my-jobs').post(protect, getJobsOwner);
+  router.route('/my-jobs').get(protect, getJobsOwner);
   
 
 module.exports = router;
