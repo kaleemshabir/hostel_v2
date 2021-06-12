@@ -17,7 +17,10 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
   });
 });
 exports.getJobsOwner = asyncHandler(async (req, res, next) => {
-  const jobs = await Job.find({postedBy:req.user.id}).sort([[("created_at", -1)]]);
+  const jobs = await Job.find({postedBy:req.user.id}).populate({
+    path: "postedBy",
+    select: "name email",
+  }).sort([[("created_at", -1)]]);
   if (!jobs) {
     return next(new ErrorResponse("No job found", 404));
   }
