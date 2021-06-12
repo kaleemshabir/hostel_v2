@@ -165,7 +165,11 @@ exports.apply = asyncHandler(async (req, res, next) => {
   }
   const found = job.appliers.find((x) => x.user.toString() == req.user.id);
   if (found && found.user == req.user.id) {
-    return next(new ErrorResponse(`Already applied for this job`, 400));
+    // return next(new ErrorResponse(`Already applied for this job`, 400));
+    return res.status(400).json({
+      success:false,
+      message:"Already applied for this job"
+    })
   }
 
   job.appliers.push(data);
