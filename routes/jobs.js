@@ -53,7 +53,7 @@ const upload = multer({
 const router = express.Router();
 
 const { protect } = require('../middleware/auth');
-
+router.route('/my-jobs').get(protect, getJobsOwner);
 router
   .route('/')
   .get(
@@ -70,7 +70,7 @@ router
   .delete(protect,deleteJob);
 
   router.route('/:id/apply').post(protect, upload.single("file"), apply);
-  router.route('/my-jobs').get(protect, getJobsOwner);
+  
   
 
 module.exports = router;
