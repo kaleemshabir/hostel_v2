@@ -2,7 +2,9 @@ const asyncHandler = require("../middleware/async");
 const ErrorResponse = require("../utils/errorResponse");
 const Job = require("../models/Job");
 const cloudinary = require("cloudinary");
-// var PDFImage = require("pdf-image").PDFImage;
+var PDFImage = require("pdf-image").PDFImage;
+const pathh = require('path');
+const express = require("express");
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -181,13 +183,14 @@ exports.apply = asyncHandler(async (req, res, next) => {
   if (!job) {
     return next(new ErrorResponse(`Job not found with this ${req.params.id}`));
   }
-
-// var pdfImage = new PDFImage(req.file.path);
+// const lo = `./public/cv/S{req.user.id}`;
+// var pdfImage = new PDFImage(lo);
+// console.log(pdfImage);
 // const path = await pdfImage.convertPage(0);
 // console.log(path)
-  cloudinary.uploader.upload(path, async function (result) {
-    // add cloudinary url for the image to the campground object under image property
-    cv = result.secure_url;
+  // cloudinary.uploader.upload(req.file.path, async function (result) {
+  //   // add cloudinary url for the image to the campground object under image property
+  //   cv = result.secure_url;
     const data = {
       cv,
       user: req.body.user,
@@ -219,7 +222,7 @@ exports.apply = asyncHandler(async (req, res, next) => {
   
 
  
-});
+// });
 
 //@desc   search jobs
 //@route  POST /api/v1/jobs/search
