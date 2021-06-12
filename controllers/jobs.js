@@ -168,7 +168,7 @@ exports.apply = asyncHandler(async (req, res, next) => {
     // return next(new ErrorResponse(`Already applied for this job`, 400));
     return res.status(304).json({
       success:false,
-      message:"Already applied for this job"
+      message:"Already applied for this job******"
     })
   }
 
