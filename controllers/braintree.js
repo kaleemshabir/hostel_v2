@@ -1,5 +1,6 @@
 const asyncHandler = require("../middleware/async");
 const ErrorResponse = require("../utils/errorResponse");
+const SeatBooked = require("../models/SeatBooked");
 const braintree = require("braintree");
 var gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
