@@ -38,14 +38,11 @@ exports.processPayment = asyncHandler(async(req, res, next) => {
   }
   req.body.user = req.user.id;
   const data = {
-    title: req.body.amount,
-    transaction_id: req.body.transaction_id,
+    amount: newTransaction.transaction.amount,
+    transaction_id: newTransaction.transaction.id,
     hostel: req.body.hostel,
-    HostelOwner: req.body.HostelOwner,
-    seatNumber: req.body.seatNumber,
     roomNumber: req.body.roomNumber,
-    address: req.body.address,
-    bookedBy: req.body.bookedBy,
+    bookedBy: req.body.user,
   };
   await SeatBooked.create(data);
 
