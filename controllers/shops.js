@@ -6,8 +6,8 @@ const Shop = require('../models/Shop');
 
 
 
-// @desc        Get all hostels
-// @route       GET /api/v1/hostels
+// @desc        Get all shops
+// @route       GET /api/v1/shops
 // @access      Public
 exports.getShops = asyncHandler(async (req, res, next) => {
   let shops = await Shop.find();

@@ -34,7 +34,7 @@ const ShopSchema = new mongoose.Schema({
       },
       items: {
         type: Array,
-        default: true
+        default: []
       }
     }
   ],

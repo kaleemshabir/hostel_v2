@@ -36,6 +36,19 @@ exports.processPayment = asyncHandler(async(req, res, next) => {
   if(!newTransaction){
    return new ErrorResponse("Token not returned by braintree, try again", 400);
   }
+  req.body.user = req.user.id;
+  const data = {
+    title: req.body.amount,
+    transaction_id: req.body.transaction_id,
+    hostel: req.body.hostel,
+    HostelOwner: req.body.HostelOwner,
+    seatNumber: req.body.seatNumber,
+    roomNumber: req.body.roomNumber,
+    address: req.body.address,
+    bookedBy: req.body.bookedBy,
+  };
+  await SeatBooked.create(data);
+
   return res.status(200).json({
     success:true,
     message: "Your payment was successfull"
