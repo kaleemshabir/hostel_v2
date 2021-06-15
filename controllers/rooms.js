@@ -70,7 +70,7 @@ exports.addRoom = asyncHandler(async (req, res, next) => {
   if (hostel.user.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
-        `User ${req.user.id} is not authorized to add a course to hostel ${hostel._id}`,
+        `User ${req.user.id} is not authorized to add a room to hostel ${hostel._id}`,
         400
       )
     );
@@ -170,23 +170,37 @@ exports.BookRoom = async (req, res, next) => {
   if (!room) {
     return next(new ErrorResponse(`Room not found with this ${req.params.id}`));
   }
+
   // room.roommats.length < room.seater
-  if (room.roommats.length <= room.seater) {
-    // room = await Room.findByIdAndUpdate(
-    //   req.user.id,
-    //   // { $push: { roommats: req.user.id } },
-    //   {seater: 5},
-    //   {
-    //     new: true,
-    //     runValidators: true,
-    //   }
-    // );
+  if (room.roommats.length < room.seater) {
+    const nonceFromTheClient = req.body.paymentMethodNonce;
+  const amount = req.body.amount;
+  const newTransaction = await gateway.transaction.sale({
+    amount:amount,
+    paymentMethodNonce:nonceFromTheClient,
+    options:{
+      submitForSettlement:true
+    }
+  });
+
+  if(!newTransaction){
+   return new ErrorResponse("Token not returned by braintree, try again", 400);
+  }
+  req.body.user = req.user.id;
+  const data = {
+    amount: newTransaction.transaction.amount,
+    transaction_id: newTransaction.transaction.id,
+    hostel: req.body.hostel,
+    roomNumber: req.body.roomNumber,
+    bookedBy: req.body.user,
+  };
+  await SeatBooked.create(data);
+  room.availableSeats= room.availableSeats-1;
+   
     room.roommats.push(req.user.id);
     await room.save();
 
-    if (!room) {
-      return next(new ErrorResponse("Room not booked", 400));
-    }
+    
     const hostelId = room.hostel;
     let hostelOwner;
     const hostel = await Hostel.findById(hostelId);

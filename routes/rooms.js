@@ -25,7 +25,7 @@ router
     }),
     getrooms
   )
-  .post(protect, authorize('publisher', 'admin'), addRoom);
+  .post(protect, authorize('publisher', 'admin', "user"), addRoom);
 
 router
   .route('/:id')

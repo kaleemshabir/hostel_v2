@@ -24,13 +24,13 @@ const RoomSchema = new mongoose.Schema({
   },
   roommats: [
     {
-      type: mongoose.Schema.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User"
     }
   ],
   
   availableSeats: {
-    type: String,
+    type: Number,
   },
   
   price: {
@@ -52,7 +52,7 @@ const RoomSchema = new mongoose.Schema({
   },
 
   hostel: {
-    type: mongoose.Schema.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Hostel',
     // required: true,
   },
@@ -61,6 +61,11 @@ const RoomSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+});
+
+RoomSchema.pre("save", function(next) {
+this.availableSeats = this.seater;
+next();
 });
 
 module.exports = mongoose.model('Room', RoomSchema);

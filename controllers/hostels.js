@@ -3,6 +3,7 @@ const asyncHandler = require("../middleware/async");
 const geocoder = require("../utils/geocoder");
 const cloudinary = require("cloudinary");
 const ErrorResponse = require("../utils/errorResponse");
+const Room = require("../models/Room");
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -200,4 +201,20 @@ exports.hostelPhotoUpload = asyncHandler(async (req, res, next) => {
     // res.redirect('/users');
     res.status(200).json({ success: true, data: hostel });
   });
+});
+
+exports.getBookedSeats = asyncHandler(async (req, res, next) => {
+  const hostelId = req.params.id;
+  const bookedSeats = await Room.find({
+    hostel: hostelId,
+    roommats: { $exists: true, $type: "array", $ne: [] },
+  }).populate("roommats", "name email contactNumber").select("roommats roomNumber");
+  if(!bookedSeats) {
+    return new ErrorResponse("No Booked seat found", 404)
+  }
+  return res.status(200).json({
+    success:true,
+    message:"Booked seats found successfully",
+    data:bookedSeats
+  })
 });
