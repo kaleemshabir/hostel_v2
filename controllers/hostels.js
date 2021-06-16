@@ -208,7 +208,7 @@ exports.getBookedSeats = asyncHandler(async (req, res, next) => {
   const bookedSeats = await Room.find({
     hostel: hostelId,
     roommats: { $exists: true, $type: "array", $ne: [] },
-  }).populate("roommats", "name email contactNumber").select("roommats roomNumber");
+  }).populate("roommats", "name email contactNumber photo").select("roommats roomNumber");
   if(!bookedSeats) {
     return new ErrorResponse("No Booked seat found", 404)
   }
