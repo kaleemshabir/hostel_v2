@@ -8,8 +8,7 @@ const {
   deleteHostel,
   getHostelInRadius,
   hostelPhotoUpload,
-  getBookedSeats,
-  getNotifications
+  getBookedSeats
 } = require('../controllers/hostels');
 
 const Hostel = require('../models/Hostel');
@@ -60,6 +59,5 @@ router.put(
 
 router.route('/radius/:zipcode/:distance').get(getHostelInRadius);
 router.route("/:id/booked-seats",).get(protect, getBookedSeats);
-router.route("/:id/notifications").get(protect, authorize("publisher"), getNotifications);
 
 module.exports = router;

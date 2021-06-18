@@ -5,20 +5,14 @@ const NotificationSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref:"User"
   },
-  roomNumber: {
-    
-  },
   publisher: {
     type: mongoose.Schema.ObjectId,
     ref: "User"
   },
-  hostel: {
-    type: mongoose.Schema.ObjectId,
-    ref: "Hostel"
-  },
-  room:{
+  message: {
     type: String
   }
+  
 },{timestamps:true});
 
 module.exports = mongoose.model("Notification", NotificationSchema);

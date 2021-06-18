@@ -161,6 +161,12 @@ exports.BookRoom = async (req, res, next) => {
   // const {title, body} = req.body;
  
   let room = await Room.findById(req.params.id);
+  const hostelId = room.hostel;
+ 
+  const hostel = await Hostel.findById(hostelId);
+  if (!hostel) {
+    return new ErrorResponse("No hostel Found for this room")
+  }
   if (room.roommats.includes(req.user.id)) {
     return res
       .status(400)
@@ -200,24 +206,17 @@ exports.BookRoom = async (req, res, next) => {
     await room.save();
 
     
-    const hostelId = room.hostel;
-    let hostelOwner;
-    const hostel = await Hostel.findById(hostelId);
-    if (hostel) {
-      hostelOwner = hostel.user;
-    }
-    const user = await User.findById(hostelOwner);
+    const message = `Your customer ${req.user.name} has booked seat in room ${room.roomNumber} of hostel ${hostel.name}`;
     await Notification.create({
       user: req.user.id,
       publisher: hostel.user,
-      room: room.roomNumber,
-      hostel:hostelId
+      message: message
     });
     // const token = user.fcmToken;
     var payload = {
       notification: {
         title: "Room Booking",
-        body: `There is room booking request from, ${req.user.name}`,
+        body: `Room booked by , ${req.user.name}`,
       },
     };
     const token =
