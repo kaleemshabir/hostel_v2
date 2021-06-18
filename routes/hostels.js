@@ -8,7 +8,8 @@ const {
   deleteHostel,
   getHostelInRadius,
   hostelPhotoUpload,
-  getBookedSeats
+  getBookedSeats,
+  getNotifications
 } = require('../controllers/hostels');
 
 const Hostel = require('../models/Hostel');

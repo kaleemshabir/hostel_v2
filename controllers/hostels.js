@@ -224,10 +224,10 @@ exports.getNotifications = async(req, res, next) => {
  const notifications = await Notification.find({hostel:hostelId}).populate({
    path: "hostel",
    select: "name email phone"
- }).populate("user", "name email");
+ }).populate("user", "name email").select("-publisher");
  return res.status(200).json({
   success: true,
-  message: "Notifications found successfully",
+  message: notifications.length>0? "Notifications found successfully":"No Notification found",
   data: notifications || []
 });
 }
