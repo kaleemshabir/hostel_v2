@@ -219,8 +219,7 @@ exports.BookRoom = async (req, res, next) => {
         body: `Room booked by , ${req.user.name}`,
       },
     };
-    const token =
-      "cTwmHKhqRSyuvUfY9KdG9-:APA91bFlslBumNDuKiStZpVippsUOcSUY1bnKp9egjPAaVzU7cCR-HPX0IJilneSo_bkZ0bV_trq06fTTRAevqvy6EfhTcoBO8yJL4FocQ_P46rt_EUoTsM4_hWl47yc20hNQCzikdsT";
+    const token =req.user.fcmToken;
     await admin.messaging().sendToDevice(token, payload);
 
     return res.status(201).json({
