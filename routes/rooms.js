@@ -34,6 +34,6 @@ router
   .delete(protect, authorize('publisher', 'admin'), deleteRoom);
   router.route("/:id/book").post(protect, BookRoom);
 
-router.route("/notifications/get").get(protect, authorize("publisher"), getNotifications);
+
 
 module.exports = router;

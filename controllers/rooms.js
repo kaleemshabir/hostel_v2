@@ -5,7 +5,6 @@ var fs = require("fs");
 const Room = require("../models/Room");
 const Hostel = require("../models/Hostel");
 const admin = require("firebase-admin");
-const Notification = require("../models/Notification");
 const User = require("../models/User");
 const serviceAccount = require("../feroshgah.json");
 
@@ -211,7 +210,8 @@ exports.BookRoom = async (req, res, next) => {
     await Notification.create({
       user: req.user.id,
       publisher: hostel.user,
-      room: room.roomNumber
+      room: room.roomNumber,
+      hostel:hostelId
     });
     // const token = user.fcmToken;
     var payload = {
@@ -238,14 +238,4 @@ exports.BookRoom = async (req, res, next) => {
   }
 };
 
-exports.getNotifications = async(req, res, next) => {
- const notifications = await Notification.find({publisher:req.user.id}).populate({
-   path: "publisher",
-   select: "name email"
- });
- return res.status(200).json({
-  success: true,
-  message: "Notifications found successfully",
-  data: notifications
-});
-}
+

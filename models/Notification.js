@@ -11,6 +11,13 @@ const NotificationSchema = new mongoose.Schema({
   publisher: {
     type: mongoose.Schema.ObjectId,
     ref: "User"
+  },
+  hostel: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Hostel"
+  },
+  room:{
+    type: String
   }
 },{timestamps:true});
 

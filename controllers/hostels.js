@@ -4,6 +4,7 @@ const geocoder = require("../utils/geocoder");
 const cloudinary = require("cloudinary");
 const ErrorResponse = require("../utils/errorResponse");
 const Room = require("../models/Room");
+const Notification = require("../models/Notification");
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -218,3 +219,15 @@ exports.getBookedSeats = asyncHandler(async (req, res, next) => {
     data:bookedSeats
   })
 });
+exports.getNotifications = async(req, res, next) => {
+  const hostelId = req.params.id;
+ const notifications = await Notification.find({hostel:hostelId}).populate({
+   path: "hostel",
+   select: "name email phone"
+ }).populate("user", "name email");
+ return res.status(200).json({
+  success: true,
+  message: "Notifications found successfully",
+  data: notifications || []
+});
+}
