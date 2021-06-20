@@ -12,36 +12,31 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-
 // @desc        Get all hostels
 // @route       GET /api/v1/hostels
 // @access      Public
 exports.getHostels = asyncHandler(async (req, res, next) => {
-  let hostels = await Hostel.find()
+  const query = {
+    $or: [
+      { name: { $regex: req.body.search, $options: "i" } },
+      {
+        address: { $regex: req.body.search, $options: "i" },
+      },
+      {
+        hostelType: { $regex: req.body.search, $options: "i" },
+      }
+    ],
+  };
+  let hostels = await Hostel.find(query)
     .populate({
       path: "room",
     })
     .sort([[("created_at", -1)]]);
-  const search = req.body.search;
-  let copy = [];
 
-  hostels.forEach((element) => {
-    if (
-      element.name.toLowerCase().includes(search.toLowerCase()) ||
-      element.address.toLowerCase().includes(search.toLowerCase()) ||
-      element.hostelType.toLowerCase().includes(search.toLowerCase())
-    ) {
-      copy.push(element);
-    }
-
-    if (copy.length > 0) {
-      hostels = copy;
-    }
-  });
   return res.status(200).json({
     success: true,
     count: hostels.length,
-    data: hostels,
+    data: hostels || [],
   });
 });
 
@@ -210,25 +205,33 @@ exports.getBookedSeats = asyncHandler(async (req, res, next) => {
   const bookedSeats = await Room.find({
     hostel: hostelId,
     roommats: { $exists: true, $type: "array", $ne: [] },
-  }).populate("roommats", "name email contactNumber photo").select("roommats roomNumber");
-  if(!bookedSeats) {
-    return new ErrorResponse("No Booked seat found", 404)
+  })
+    .populate("roommats", "name email contactNumber photo")
+    .select("roommats roomNumber");
+  if (!bookedSeats) {
+    return new ErrorResponse("No Booked seat found", 404);
   }
   return res.status(200).json({
-    success:true,
-    message:"Booked seats found successfully",
-    data:bookedSeats
-  })
+    success: true,
+    message: "Booked seats found successfully",
+    data: bookedSeats,
+  });
 });
-exports.getNotifications = async(req, res, next) => {
+exports.getNotifications = async (req, res, next) => {
   const hostelId = req.params.id;
- const notifications = await Notification.find({hostel:hostelId}).populate({
-   path: "hostel",
-   select: "name email phone"
- }).populate("user", "name email").select("-publisher");
- return res.status(200).json({
-  success: true,
-  message: notifications.length>0? "Notifications found successfully":"No Notification found",
-  data: notifications || []
-});
-}
+  const notifications = await Notification.find({ hostel: hostelId })
+    .populate({
+      path: "hostel",
+      select: "name email phone",
+    })
+    .populate("user", "name email")
+    .select("-publisher");
+  return res.status(200).json({
+    success: true,
+    message:
+      notifications.length > 0
+        ? "Notifications found successfully"
+        : "No Notification found",
+    data: notifications || [],
+  });
+};

@@ -1,7 +1,7 @@
-const asyncHandler = require('../middleware/async');
-const ErrorResponse = require('../utils/errorResponse');
-const Product = require('../models/Product');
-const Shop = require('../models/Shop');
+const asyncHandler = require("../middleware/async");
+const ErrorResponse = require("../utils/errorResponse");
+const Product = require("../models/Product");
+const Shop = require("../models/Shop");
 const Order = require("../models/Order");
 const admin = require("firebase-admin");
 const braintree = require("braintree");
@@ -9,7 +9,7 @@ var gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
   merchantId: process.env.BRAINTREE_MERCHANT_ID,
   publicKey: process.env.BRAINTREE_PUBLIC_KEY,
-  privateKey: process.env.BRAINTREE_PRIVATE_KEY
+  privateKey: process.env.BRAINTREE_PRIVATE_KEY,
 });
 
 // @desc        Get all rooms
@@ -31,19 +31,21 @@ exports.getProducts = asyncHandler(async (req, res) => {
       },
       {
         category: { $regex: req.body.search, $options: "i" },
-      }
+      },
     ],
   };
-    let products = await Product.find(query).populate({
-      path: 'shop'
-    });
-   
-    return res.status(200).json({
-      success: true,
-      count: products.length,
-      data: products || [],
-    });
- 
+  let products = await Product.find(query)
+    .populate({
+      path: "shop",
+    })
+    .sort([["created_at", -1]])
+    .lean();
+
+  return res.status(200).json({
+    success: true,
+    count: products.length,
+    data: products || [],
+  });
 });
 
 // @desc        Get single room
@@ -51,7 +53,7 @@ exports.getProducts = asyncHandler(async (req, res) => {
 // @access      Public
 exports.getProduct = asyncHandler(async (req, res, next) => {
   const product = await Product.findById(req.params.id).populate({
-    path: 'shop'
+    path: "shop",
   });
 
   if (!product) {
@@ -82,7 +84,7 @@ exports.addProduct = asyncHandler(async (req, res, next) => {
   }
 
   // Make sure user is hostel owner
-  if (shop.user.toString() !== req.user.id && req.user.role !== 'admin') {
+  if (shop.user.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
         `User ${req.user.id} is not authorized to add a product to the  ${shop._id}`,
@@ -92,17 +94,15 @@ exports.addProduct = asyncHandler(async (req, res, next) => {
   }
   const products = await Product.find({ shop: req.params.shopId });
   let totalProducts = products.length;
- 
 
   let count = totalProducts + 1;
   req.body.roomNumber = count;
-  
 
   const product = await Product.create(req.body);
 
   res.status(200).json({
     success: true,
-    data: {product, shop},
+    data: { product, shop },
   });
 });
 
@@ -119,7 +119,7 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
   }
 
   // Make sure user is product owner
-  if (product.user.toString() !== req.user.id && req.user.role !== 'admin') {
+  if (product.user.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
         `User ${req.user.id} is not authorized to update product`,
@@ -151,7 +151,7 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
     );
   }
   // Make sure user is product owner
-  if (product.user.toString() !== req.user.id && req.user.role !== 'admin') {
+  if (product.user.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
         `User ${req.user.id} is not authorized to delete product`,
@@ -167,31 +167,33 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
     data: {},
   });
 });
-exports.purchaseProduct = asyncHandler(async(req, res, next) => {
+exports.purchaseProduct = asyncHandler(async (req, res, next) => {
   let product = await Product.findById(req.params.id);
-  if(!product) {
-    return  next(new ErrorResponse("Product not found"));
+  if (!product) {
+    return next(new ErrorResponse("Product not found"));
   }
   const shopId = product.shop;
- 
+
   const shop = await Shop.findById(shopId).lean();
   if (!shop) {
     return next(new ErrorResponse("No shop Found for this product"));
-  } 
-  const {quantity, sold} = shop;
-  if (sold<quantity) {
+  }
+  const { quantity, sold } = shop;
+  if (sold < quantity) {
     const nonceFromTheClient = req.body.paymentMethodNonce;
     const amount = req.body.amount;
     const newTransaction = await gateway.transaction.sale({
-      amount:amount,
-      paymentMethodNonce:nonceFromTheClient,
-      options:{
-        submitForSettlement:true
-      }
+      amount: amount,
+      paymentMethodNonce: nonceFromTheClient,
+      options: {
+        submitForSettlement: true,
+      },
     });
-  
-    if(!newTransaction){
-     return next( new ErrorResponse("Token not returned by braintree, try again", 400));
+
+    if (!newTransaction) {
+      return next(
+        new ErrorResponse("Token not returned by braintree, try again", 400)
+      );
     }
     req.body.user = req.user.id;
     const data = {
@@ -199,37 +201,37 @@ exports.purchaseProduct = asyncHandler(async(req, res, next) => {
       transaction_id: newTransaction.transaction.id,
       shop: shop._id,
       product: req.params.id,
-      publisher:shop.user,
+      publisher: shop.user,
       orderBy: req.body.user,
     };
     await Order.create(data);
-    product.quantity= product.quantity-1;
-    
-      await product.save();
-      const message = `Your customer ${req.user.name} has purchased product ${product.name} from your shop ${shop.name}`;
-      await Notification.create({
-        user: req.user.id,
-        publisher: shop.user,
-        message: message,
-        no_of:"product"
-      });
-      // const token = user.fcmToken;
-      var payload = {
-        notification: {
-          title: "Product Purchase",
-          body: `${product.name} purchased by  , ${req.user.name} successfully`,
-        },
-      };
-      const token =req.user.fcmToken;
-      await admin.messaging().sendToDevice(token, payload);
-  
-      return res.status(201).json({
-        success: true,
-        message: "Product purchased successfully",
-      });
-  }else {
+    product.quantity = product.quantity - 1;
+
+    await product.save();
+    const message = `Your customer ${req.user.name} has purchased product ${product.name} from your shop ${shop.name}`;
+    await Notification.create({
+      user: req.user.id,
+      publisher: shop.user,
+      message: message,
+      no_of: "product",
+    });
+    // const token = user.fcmToken;
+    var payload = {
+      notification: {
+        title: "Product Purchase",
+        body: `${product.name} purchased by  , ${req.user.name} successfully`,
+      },
+    };
+    const token = req.user.fcmToken;
+    await admin.messaging().sendToDevice(token, payload);
+
+    return res.status(201).json({
+      success: true,
+      message: "Product purchased successfully",
+    });
+  } else {
     return res
-    .status(400)
-    .json({ success: false, message: "OOPs!, Stock is empty" });
+      .status(400)
+      .json({ success: false, message: "OOPs!, Stock is empty" });
   }
-})
+});
