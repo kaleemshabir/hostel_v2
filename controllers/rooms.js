@@ -6,11 +6,19 @@ const Room = require("../models/Room");
 const Hostel = require("../models/Hostel");
 const admin = require("firebase-admin");
 const User = require("../models/User");
-const serviceAccount = require("../feroshgah.json");
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+// const serviceAccount = require("../feroshgah.json");
+const braintree = require("braintree");
+var gateway = new braintree.BraintreeGateway({
+  environment: braintree.Environment.Sandbox,
+  merchantId: process.env.BRAINTREE_MERCHANT_ID,
+  publicKey: process.env.BRAINTREE_PUBLIC_KEY,
+  privateKey: process.env.BRAINTREE_PRIVATE_KEY
 });
+
+
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+// });
 
 // @desc        Get all rooms
 // @route       GET /api/v1/rooms
@@ -189,7 +197,7 @@ exports.BookRoom = async (req, res, next) => {
   });
 
   if(!newTransaction){
-   return new ErrorResponse("Token not returned by braintree, try again", 400);
+   return next( new ErrorResponse("Token not returned by braintree, try again", 400));
   }
   req.body.user = req.user.id;
   const data = {
@@ -198,6 +206,7 @@ exports.BookRoom = async (req, res, next) => {
     hostel: req.body.hostel,
     roomNumber: req.body.roomNumber,
     bookedBy: req.body.user,
+    no_of:"hostel"
   };
   await SeatBooked.create(data);
   room.availableSeats= room.availableSeats-1;

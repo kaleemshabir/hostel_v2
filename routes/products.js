@@ -4,14 +4,11 @@ const {
   getProduct,
   addProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  purchaseProduct
 } = require('../controllers/products');
 const router = express.Router({ mergeParams: true });
-
-const Product = require('../models/Product');
-
 const { protect, authorize } = require("../middleware/auth");
-
 router.route('/search').post(getProducts)
 router
   .route('/')
@@ -22,5 +19,6 @@ router
   .get(getProduct)
   .put(protect, authorize('publisher', 'admin'), updateProduct)
   .delete(protect, authorize('publisher', 'admin'), deleteProduct);
+  router.route("/:id/purchase").post(protect,purchaseProduct);
 
 module.exports = router;

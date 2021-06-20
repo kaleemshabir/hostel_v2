@@ -2,6 +2,15 @@ const asyncHandler = require('../middleware/async');
 const ErrorResponse = require('../utils/errorResponse');
 const Product = require('../models/Product');
 const Shop = require('../models/Shop');
+const Order = require("../models/Order");
+const admin = require("firebase-admin");
+const braintree = require("braintree");
+var gateway = new braintree.BraintreeGateway({
+  environment: braintree.Environment.Sandbox,
+  merchantId: process.env.BRAINTREE_MERCHANT_ID,
+  publicKey: process.env.BRAINTREE_PUBLIC_KEY,
+  privateKey: process.env.BRAINTREE_PRIVATE_KEY
+});
 
 // @desc        Get all rooms
 // @route       GET /api/v1/rooms
@@ -17,12 +26,12 @@ exports.getProducts = asyncHandler(async (req, res, next) => {
  
 
     products.forEach(element => {
-      if( element.name.toLowerCase().includes(search.toLowerCase()) ||
-      element.address.toLowerCase().includes(search.toLowerCase()) || 
-      element.price.toLowerCase().includes(search.toLowerCase()) ||
-      element.description.toLowerCase().includes(search.toLowerCase()) ||
-      element.category.toLowerCase().includes(search.toLowerCase()) ||
-      element.shop.name.toLowerCase().includes(search.toLowerCase())){
+      if( element.name?.toLowerCase().includes(search.toLowerCase()) ||
+      element.address?.toLowerCase().includes(search.toLowerCase()) || 
+      element.price?.toLowerCase().includes(search.toLowerCase()) ||
+      element.description?.toLowerCase().includes(search.toLowerCase()) ||
+      element.category?.toLowerCase().includes(search.toLowerCase()) ||
+      element.shop?.name?.toLowerCase().includes(search.toLowerCase())){
         copy.push(element);
         
       }
@@ -143,7 +152,6 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
       new ErrorResponse(`No product with the id of ${req.params.id}`, 404)
     );
   }
-
   // Make sure user is product owner
   if (product.user.toString() !== req.user.id && req.user.role !== 'admin') {
     return next(
@@ -161,3 +169,69 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
     data: {},
   });
 });
+exports.purchaseProduct = asyncHandler(async(req, res, next) => {
+  let product = await Product.findById(req.params.id);
+  if(!product) {
+    return  next(new ErrorResponse("Product not found"));
+  }
+  const shopId = product.shop;
+ 
+  const shop = await Shop.findById(shopId).lean();
+  if (!shop) {
+    return next(new ErrorResponse("No shop Found for this product"));
+  } 
+  const {quantity, sold} = shop;
+  if (sold<quantity) {
+    const nonceFromTheClient = req.body.paymentMethodNonce;
+    const amount = req.body.amount;
+    const newTransaction = await gateway.transaction.sale({
+      amount:amount,
+      paymentMethodNonce:nonceFromTheClient,
+      options:{
+        submitForSettlement:true
+      }
+    });
+  
+    if(!newTransaction){
+     return next( new ErrorResponse("Token not returned by braintree, try again", 400));
+    }
+    req.body.user = req.user.id;
+    const data = {
+      amount: newTransaction.transaction.amount,
+      transaction_id: newTransaction.transaction.id,
+      shop: shop._id,
+      product: req.params.id,
+      publisher:shop.user,
+      orderBy: req.body.user,
+    };
+    await Order.create(data);
+    product.quantity= product.quantity-1;
+    
+      await product.save();
+      const message = `Your customer ${req.user.name} has purchased product ${product.name} from your shop ${shop.name}`;
+      await Notification.create({
+        user: req.user.id,
+        publisher: shop.user,
+        message: message,
+        no_of:"product"
+      });
+      // const token = user.fcmToken;
+      var payload = {
+        notification: {
+          title: "Product Purchase",
+          body: `${product.name} purchased by  , ${req.user.name} successfully`,
+        },
+      };
+      const token =req.user.fcmToken;
+      await admin.messaging().sendToDevice(token, payload);
+  
+      return res.status(201).json({
+        success: true,
+        message: "Product purchased successfully",
+      });
+  }else {
+    return res
+    .status(400)
+    .json({ success: false, message: "OOPs!, Stock is empty" });
+  }
+})

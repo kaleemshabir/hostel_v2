@@ -12,6 +12,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+
 // @desc        Get all hostels
 // @route       GET /api/v1/hostels
 // @access      Public

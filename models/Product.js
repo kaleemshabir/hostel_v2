@@ -18,6 +18,17 @@ const ProductShema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'User',
     required: true
+  },
+  quantity: {
+    type: Number
+  },
+  sold: {
+    type: Number,
+    default: 0
+  },
+  no_of:{
+    type: String,
+    enum: ["product", "hostel"]
   }
 
 

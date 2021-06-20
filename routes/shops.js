@@ -1,5 +1,4 @@
 const express = require('express');
-var multer = require('multer');
 const {
   createShop,
   getShop,
@@ -28,7 +27,6 @@ router.route('/search')
 .post( getShops);
 router
   .route('/') 
-
   .post(protect, authorize('publisher', 'admin'), createShop);
 router
   .route('/:id')
@@ -38,14 +36,6 @@ router
 
   router.route("/products")
   .get(getProducts);
-
-// router.put(
-//   '/:id/photo',
-//   protect,
-//   authorize('publisher', 'admin'),
-//   upload.single('file'),
-//   hostelPhotoUpload
-// );
 
 router.route('/radius').get(getShopInRadius);
 
