@@ -18,16 +18,18 @@ const OrderSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "Shop",
   },
+  product: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Product",
+  },
   orderBy: {
     type: mongoose.Schema.ObjectId,
     ref: "User",
   },
-
-  bookedBy: {
-    type: mongoose.Schema.ObjectId,
-    ref: "User",
-    required: true,
-  },
+publisher: {
+  type: mongoose.Schema.ObjectId,
+  ref: "User",
+}
 },{timestamps: true});
 
 module.exports = mongoose.model("Order", OrderSchema);

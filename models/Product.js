@@ -26,10 +26,7 @@ const ProductShema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  no_of:{
-    type: String,
-    enum: ["product", "hostel"]
-  }
+ 
 
 
 }, {timestamps: true});

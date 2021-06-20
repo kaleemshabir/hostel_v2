@@ -11,6 +11,10 @@ const NotificationSchema = new mongoose.Schema({
   },
   message: {
     type: String
+  },
+  no_of:{
+    type: String,
+    enum: ["product", "hostel"]
   }
   
 },{timestamps:true});

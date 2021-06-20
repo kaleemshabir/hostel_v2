@@ -16,34 +16,32 @@ var gateway = new braintree.BraintreeGateway({
 // @route       GET /api/v1/rooms
 //@route        GET /api/v1/hostels/:hostelId/rooms
 // @access      Public
-exports.getProducts = asyncHandler(async (req, res, next) => {
-
-    let products = await Product.find().populate({
+exports.getProducts = asyncHandler(async (req, res) => {
+  const query = {
+    $or: [
+      { name: { $regex: req.body.search, $options: "i" } },
+      {
+        address: { $regex: req.body.search, $options: "i" },
+      },
+      {
+        price: { $regex: req.body.search, $options: "i" },
+      },
+      {
+        description: { $regex: req.body.search, $options: "i" },
+      },
+      {
+        category: { $regex: req.body.search, $options: "i" },
+      }
+    ],
+  };
+    let products = await Product.find(query).populate({
       path: 'shop'
     });
-    const search = req.body.search;
-  let copy=[];
- 
-
-    products.forEach(element => {
-      if( element.name?.toLowerCase().includes(search.toLowerCase()) ||
-      element.address?.toLowerCase().includes(search.toLowerCase()) || 
-      element.price?.toLowerCase().includes(search.toLowerCase()) ||
-      element.description?.toLowerCase().includes(search.toLowerCase()) ||
-      element.category?.toLowerCase().includes(search.toLowerCase()) ||
-      element.shop?.name?.toLowerCase().includes(search.toLowerCase())){
-        copy.push(element);
-        
-      }
-
-      if(copy.length > 0 ) {
-        products = copy;
-      }
-    });
+   
     return res.status(200).json({
       success: true,
       count: products.length,
-      data: products,
+      data: products || [],
     });
  
 });

@@ -7,11 +7,9 @@ const {
   updateShop,
   deleteShop,
 getShopInRadius,
-getProducts
+getProducts,
+getOrders
 } = require('../controllers/shops');
-
-const Shop = require('../models/Shop');
-
 // Include other resource routers
 const productRouter = require('./products');
 const reviewsRouter = require('./shopReview');
@@ -33,6 +31,7 @@ router
   .get(getShop)
   .put(protect, authorize('publisher', 'admin'), updateShop)
   .delete(protect, authorize('publisher', 'admin'), deleteShop);
+router.route("/:id/orders").get(protect, authorize("publisher", "admin"), getOrders)
 
   router.route("/products")
   .get(getProducts);

@@ -3,7 +3,7 @@ const asyncHandler = require('../middleware/async');
 const geocoder = require('../utils/geocoder');
 const ErrorResponse = require('../utils/errorResponse');
 const Shop = require('../models/Shop');
-
+const Order = require("../models/Order");
 
 
 // @desc        Get all shops
@@ -195,4 +195,20 @@ exports.getProducts = asyncHandler(async(req, res, next) =>{
     products.concat(shop.items);
   });
   return res.send({products, })
-} )
+} );
+
+
+exports.getOrders = async (req, res) => {
+  const orders = await Order.find({ shop: req.params.id })
+    .populate("user", "name email photo contactNumber")
+    .populate("product","name category")
+    .select("-publisher");
+  return res.status(200).json({
+    success: true,
+    message:
+      orders.length > 0
+        ? "Orders found successfully"
+        : "No Order found",
+    data: orders || [],
+  });
+};
