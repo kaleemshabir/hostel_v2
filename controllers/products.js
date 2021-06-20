@@ -5,7 +5,6 @@ const Shop = require("../models/Shop");
 const Order = require("../models/Order");
 const admin = require("firebase-admin");
 const braintree = require("braintree");
-const { query } = require("express");
 var gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
   merchantId: process.env.BRAINTREE_MERCHANT_ID,

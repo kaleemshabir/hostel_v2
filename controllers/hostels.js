@@ -36,7 +36,7 @@ exports.getHostels = asyncHandler(async (req, res, next) => {
     .populate({
       path: "room",
     })
-    .sort([[("created_at", -1)]]);
+    .sort([[("created_at", -1)]]).lean();
 
   return res.status(200).json({
     success: true,
