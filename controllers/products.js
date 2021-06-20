@@ -80,7 +80,6 @@ exports.getProduct = asyncHandler(async (req, res, next) => {
 exports.addProduct = asyncHandler(async (req, res, next) => {
   req.body.shop = req.params.shopId;
   req.body.user = req.user.id;
-  console.log("userId", req.body.user);
 
   const shop = await Shop.findById(req.params.shopId);
   if (!shop) {
@@ -98,13 +97,12 @@ exports.addProduct = asyncHandler(async (req, res, next) => {
       )
     );
   }
-  const products = await Product.find({ shop: req.params.shopId });
-  let totalProducts = products.length;
+  const product = await Product.findOne({name:req.body.name}).lean();
+  if(product) {
+    return new ErrorResponse("Product with this name already exists", 400);
+  }
 
-  let count = totalProducts + 1;
-  req.body.roomNumber = count;
-
-  const product = await Product.create(req.body);
+  await Product.create(req.body);
 
   res.status(200).json({
     success: true,
