@@ -16,17 +16,22 @@ cloudinary.config({
 // @route       GET /api/v1/hostels
 // @access      Public
 exports.getHostels = asyncHandler(async (req, res, next) => {
-  const query = {
-    $or: [
-      { name: { $regex: req.body.search, $options: "i" } },
-      {
-        address: { $regex: req.body.search, $options: "i" },
-      },
-      {
-        hostelType: { $regex: req.body.search, $options: "i" },
-      }
-    ],
-  };
+  let query;
+  if (!req.body.search) {
+    query = {};
+  } else {
+    query = {
+      $or: [
+        { name: { $regex: req.body.search, $options: "i" } },
+        {
+          address: { $regex: req.body.search, $options: "i" },
+        },
+        {
+          hostelType: { $regex: req.body.search, $options: "i" },
+        },
+      ],
+    };
+  }
   let hostels = await Hostel.find(query)
     .populate({
       path: "room",

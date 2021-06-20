@@ -5,6 +5,7 @@ const Shop = require("../models/Shop");
 const Order = require("../models/Order");
 const admin = require("firebase-admin");
 const braintree = require("braintree");
+const { query } = require("express");
 var gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
   merchantId: process.env.BRAINTREE_MERCHANT_ID,
@@ -17,23 +18,29 @@ var gateway = new braintree.BraintreeGateway({
 //@route        GET /api/v1/hostels/:hostelId/rooms
 // @access      Public
 exports.getProducts = asyncHandler(async (req, res) => {
-  const query = {
-    $or: [
-      { name: { $regex: req.body.search, $options: "i" } },
-      {
-        address: { $regex: req.body.search, $options: "i" },
-      },
-      {
-        price: { $regex: req.body.search, $options: "i" },
-      },
-      {
-        description: { $regex: req.body.search, $options: "i" },
-      },
-      {
-        category: { $regex: req.body.search, $options: "i" },
-      },
-    ],
-  };
+  let query;
+  if (!req.body.search) {
+    query = {};
+  } else {
+    query = {
+      $or: [
+        { name: { $regex: req.body.search, $options: "i" } },
+        {
+          address: { $regex: req.body.search, $options: "i" },
+        },
+        {
+          price: { $regex: req.body.search, $options: "i" },
+        },
+        {
+          description: { $regex: req.body.search, $options: "i" },
+        },
+        {
+          category: { $regex: req.body.search, $options: "i" },
+        },
+      ],
+    };
+  }
+
   let products = await Product.find(query)
     .populate({
       path: "shop",
