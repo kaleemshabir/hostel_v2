@@ -6,7 +6,6 @@ const {
   updateProduct,
   deleteProduct,
   purchaseProduct,
-  getProducts,
   getAllProducts
 } = require('../controllers/products');
 const router = express.Router({ mergeParams: true });
