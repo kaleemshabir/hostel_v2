@@ -9,10 +9,10 @@ const {
 } = require('../controllers/products');
 const router = express.Router({ mergeParams: true });
 const { protect, authorize } = require("../middleware/auth");
-router.route('/search').post(getProducts)
+router.route('/search').post(getAllProducts)
 router
   .route('/')
- .post(protect, authorize('publisher', 'admin'), addProduct);
+ .post(protect, authorize('publisher', 'admin'), addProduct).get(protect, getProducts);
 
 router
   .route('/:id')

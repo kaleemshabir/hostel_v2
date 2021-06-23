@@ -16,7 +16,7 @@ var gateway = new braintree.BraintreeGateway({
 // @route       GET /api/v1/rooms
 //@route        GET /api/v1/hostels/:hostelId/rooms
 // @access      Public
-exports.getProducts = asyncHandler(async (req, res) => {
+exports.getAllProducts = asyncHandler(async (req, res) => {
   let query;
   if (!req.body.search) {
     query = {};
@@ -53,6 +53,15 @@ exports.getProducts = asyncHandler(async (req, res) => {
     data: products || [],
   });
 });
+exports.getProducts = asyncHandler(async(req, res,next) => {
+  const products = await Product.find({shop:req.params.id});
+
+  res.status(200).json({
+    success: true,
+    message:products.length>0?"Products found successfully":"No product found",
+    data: products ||[],
+  });
+})
 
 // @desc        Get single room
 // @route       GET /api/v1/rooms/:id
