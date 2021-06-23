@@ -5,7 +5,9 @@ const {
   addProduct,
   updateProduct,
   deleteProduct,
-  purchaseProduct
+  purchaseProduct,
+  getProducts,
+  getAllProducts
 } = require('../controllers/products');
 const router = express.Router({ mergeParams: true });
 const { protect, authorize } = require("../middleware/auth");
