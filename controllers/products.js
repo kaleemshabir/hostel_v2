@@ -54,7 +54,7 @@ exports.getAllProducts = asyncHandler(async (req, res) => {
   });
 });
 exports.getProducts = asyncHandler(async(req, res,next) => {
-  const products = await Product.find({shop:req.params.id});
+  const products = await Product.find({shop:req.params.shopId});
 
   res.status(200).json({
     success: true,
