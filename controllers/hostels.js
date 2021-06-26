@@ -29,6 +29,12 @@ exports.getHostels = asyncHandler(async (req, res, next) => {
         {
           hostelType: { $regex: req.body.search, $options: "i" },
         },
+        {
+          town: { $regex: req.body.search, $options: "i" },
+        },
+        {
+          city: { $regex: req.body.search, $options: "i" },
+        },
       ],
     };
   }
