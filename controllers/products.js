@@ -43,6 +43,9 @@ exports.getAllProducts = asyncHandler(async (req, res) => {
   let products = await Product.find(query)
     .populate({
       path: "shop",
+    }).populate({
+      path:"user",
+      select:"name email contactNumber"
     })
     .sort([["created_at", -1]])
     .lean();
@@ -69,6 +72,9 @@ exports.getProducts = asyncHandler(async(req, res,next) => {
 exports.getProduct = asyncHandler(async (req, res, next) => {
   const product = await Product.findById(req.params.id).populate({
     path: "shop",
+  }).populate({
+    path:"user",
+    select:"name email contactNumber"
   });
 
   if (!product) {
