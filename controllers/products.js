@@ -197,7 +197,7 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
   if (!shop) {
     return next(new ErrorResponse("No shop Found for this product"));
   }
-  const { quantity, sold } = shop;
+  const { quantity, sold } = product;
   if (sold < quantity) {
     const nonceFromTheClient = req.body.paymentMethodNonce;
     const amount = req.body.amount;
