@@ -224,7 +224,7 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
       publisher: shop.user,
       orderBy: req.body.user,
     };
-    await Order.create(data);
+    // await Order.create(data);
     product.quantity = product.quantity - 1;
 
     await product.save();
