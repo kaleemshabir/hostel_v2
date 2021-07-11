@@ -6,6 +6,7 @@ const Room = require("../models/Room");
 const Hostel = require("../models/Hostel");
 const admin = require("firebase-admin");
 const User = require("../models/User");
+const SeatBooked  = require("../models/SeatBooked");
 // const serviceAccount = require("../feroshgah.json");
 const braintree = require("braintree");
 var gateway = new braintree.BraintreeGateway({
