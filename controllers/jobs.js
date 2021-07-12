@@ -252,7 +252,7 @@ exports.search = asyncHandler(async (req, res, next) => {
     ],
   };
 
-  const jobs = await Job.find(query).select("-appliers")
+  const jobs = await Job.find(query)
     .sort([["created_at", -1]])
     .lean();
 
