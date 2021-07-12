@@ -41,6 +41,14 @@ const ShopSchema = new mongoose.Schema({
  
   longitude: String,
   latitude: String,
+  town: {
+    type: String,
+    required: [true, 'Plz add an town'],
+    },
+    city: {
+    type: String,
+    required: [true, 'Please add an city'],
+    },
   photo: String,
   
   createdAt: {
