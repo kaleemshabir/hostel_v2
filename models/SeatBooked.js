@@ -4,7 +4,6 @@ const BookedSeatSchema = new mongoose.Schema({
   amount: {
     type: Number,
     required: [true, "Please add a amount"],
-    unique: true,
     trim: true,
     maxlength: [50, "Amount cannot be more than 50 characters"],
   },
