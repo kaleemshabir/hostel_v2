@@ -23,12 +23,12 @@ router
     }),
     getReviews
   )
-  .post(protect, authorize('user', 'admin'), addReview);
+  .post(protect, authorize('user', 'admin','publisher'), addReview);
 
 router
   .route('/:id')
   .get(getReview)
-  .put(protect, authorize('user', 'admin'), updateReview)
-  .delete(protect, authorize('user', 'admin'), deleteReview);
+  .put(protect, authorize('user', 'admin','publisher'), updateReview)
+  .delete(protect, authorize('user', 'admin','publisher'), deleteReview);
 
 module.exports = router;
