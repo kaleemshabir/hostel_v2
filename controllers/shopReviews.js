@@ -12,6 +12,9 @@ exports.getReviews = asyncHandler(async (req, res, next) => {
     const reviews = await Review.find({ shop: req.params.shopId }).populate({
       path:"shop",
       select:["name", "address"]
+    }).populate({
+      path:"user",
+      select:"photo"
     });
 
     return res.status(200).json({

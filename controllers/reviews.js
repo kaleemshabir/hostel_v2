@@ -9,7 +9,10 @@ const Hostel = require('../models/Hostel');
 // @access    Public
 exports.getReviews = asyncHandler(async (req, res, next) => {
   if (req.params.hostelId) {
-    const reviews = await Review.find({ hostel: req.params.hostelId });
+    const reviews = await Review.find({ hostel: req.params.hostelId }).populate({
+      path:"user",
+      select:"photo"
+    });
 
     return res.status(200).json({
       success: true,
