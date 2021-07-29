@@ -89,9 +89,7 @@ exports.addRoom = asyncHandler(async (req, res, next) => {
   console.log(`totalRooms in db: ${totalRooms}`);
 
   let count = totalRooms + 1;
-  console.log(`count: ${count}`);
   req.body.roomNumber = count;
-  console.log(`roomNum: ${req.body.roomNumber}`);
 
   const room = await Room.create(req.body);
 
