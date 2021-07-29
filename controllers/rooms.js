@@ -209,7 +209,7 @@ exports.BookRoom = async (req, res, next) => {
     no_of:"hostel"
   };
   await SeatBooked.create(data);
-  room.availableSeats= room.availableSeats-1;
+  // room.availableSeats= room.availableSeats-1;
   room.remaining_seats= room.remaining_seats-1;
    
     room.roommats.push(req.user.id);

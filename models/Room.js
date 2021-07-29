@@ -66,9 +66,9 @@ const RoomSchema = new mongoose.Schema({
   },
 });
 
-RoomSchema.pre("save", function(next) {
-this.availableSeats = this.seater;
-next();
-});
+// RoomSchema.pre("save", function(next) {
+// this.availableSeats = this.seater;
+// next();
+// });
 
 module.exports = mongoose.model('Room', RoomSchema);
