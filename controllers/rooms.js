@@ -229,6 +229,12 @@ exports.BookRoom = async (req, res, next) => {
         body: `Room booked by , ${req.user.name}`,
       },
     };
+    var payload = {
+      data: {
+        title: "Room Booking",
+        message: `Room booked by , ${req.user.name}`,
+      },
+    };
     const token =req.user.fcmToken;
     await admin.messaging().sendToDevice(token, payload);
 
