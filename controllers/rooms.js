@@ -212,6 +212,7 @@ exports.BookRoom = async (req, res, next) => {
   };
   await SeatBooked.create(data);
   room.availableSeats= room.availableSeats-1;
+  room.remaining_seats= room.remaining_seats-1;
    
     room.roommats.push(req.user.id);
     await room.save();

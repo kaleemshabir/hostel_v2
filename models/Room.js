@@ -32,6 +32,9 @@ const RoomSchema = new mongoose.Schema({
   availableSeats: {
     type: Number,
   },
+  remaining_seats:{
+    type:Number
+  },
   
   price: {
     type: String,
