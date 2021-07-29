@@ -5,8 +5,7 @@ const {
   addRoom,
   updateRoom,
   deleteRoom,
-  BookRoom,
-  getNotifications
+  BookRoom
 } = require('../controllers/rooms');
 
 const Room = require('../models/Room');

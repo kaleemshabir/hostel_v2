@@ -41,6 +41,9 @@ exports.getHostels = asyncHandler(async (req, res, next) => {
   let hostels = await Hostel.find(query)
     .populate({
       path: "room",
+    }).populate({
+      path:"user",
+      select:"contactNumber"
     })
     .sort([[("created_at", -1)]]).lean();
 

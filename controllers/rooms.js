@@ -222,17 +222,15 @@ exports.BookRoom = async (req, res, next) => {
       publisher: hostel.user,
       message: message
     });
-    // const token = user.fcmToken;
     var payload = {
       notification: {
         title: "Room Booking",
         body: `Room booked by , ${req.user.name}`,
       },
     };
-    
-    const token =req.user.fcmToken;
-   const response =  await admin.messaging().sendToDevice(token, payload);
-   console.log(response);
+    const owner =  await User.findById(hostel.user);
+    const token  = owner.fcmToken;
+      await admin.messaging().sendToDevice(token, payload);
 
     return res.status(201).json({
       success: true,
@@ -247,5 +245,3 @@ exports.BookRoom = async (req, res, next) => {
     // };
   }
 };
-
-

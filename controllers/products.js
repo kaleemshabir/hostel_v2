@@ -6,6 +6,7 @@ const Order = require("../models/Order");
 const admin = require("firebase-admin");
 const braintree = require("braintree");
 const Notification = require('../models/Notification');
+const User = require("../models/User");
 var gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
   merchantId: process.env.BRAINTREE_MERCHANT_ID,
@@ -226,7 +227,7 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
     };
     // await Order.create(data);
     product.quantity = product.quantity - 1;
-
+    await Order.create(data);
     await product.save();
     const message = `Your customer ${req.user.name} has purchased product ${product.name} from your shop ${shop.name}`;
     await Notification.create({
@@ -242,7 +243,8 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
         body: `${product.name} purchased by  , ${req.user.name} successfully`,
       },
     };
-    const token = req.user.fcmToken;
+    const owner = await User.findById(shop.user);
+    const token = owner.fcmToken;
     await admin.messaging().sendToDevice(token, payload);
 
     return res.status(201).json({
