@@ -8,6 +8,7 @@ const RoomSchema = new mongoose.Schema({
   roomNumber: {
     type: Number,
     // required: [true, 'Please add  RoomNumber'],
+    unique:true
   },
   description: {
     type: String,
