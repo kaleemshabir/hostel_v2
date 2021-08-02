@@ -10,22 +10,26 @@ const Order = require("../models/Order");
 // @route       GET /api/v1/shops
 // @access      Public
 exports.getShops = asyncHandler(async (req, res, next) => {
-  let shops = await Shop.find();
-  const search = req.body.search;
-let copy=[];
+  let query;
+  if (!req.body.search) {
+    query = {};
+  } else {
+    query = {
+      $or: [
+        { name: { $regex: req.body.search, $options: "i" } },
+        {
+          address: { $regex: req.body.search, $options: "i" },
+        },
+        {
+          description: { $regex: req.body.search, $options: "i" },
+        }
+      ],
+    };
+  }
 
-  shops.forEach(element => {
-    if( element.name.toLowerCase().includes(search.toLowerCase()) ||
-    element.address.toLowerCase().includes(search.toLowerCase()) || 
-    element.description.toLowerCase().includes(search.toLowerCase())){
-      copy.push(element);
-      
-    }
 
-    if(copy.length > 0 ) {
-      shops = copy;
-    }
-  });
+  let shops = await Shop.find({}).sort([[("created_at", -1)]]).lean();;
+
   return res.status(200).json({
     success: true,
     count: shops.length,
