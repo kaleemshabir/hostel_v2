@@ -84,14 +84,13 @@ exports.addRoom = asyncHandler(async (req, res, next) => {
       )
     );
   }
-  const rooms = await Room.find({ hostel: req.params.hostelId });
-  let totalRooms = rooms.length;
-  console.log(`totalRooms in db: ${totalRooms}`);
+  let room = await Room.find({ hostel: req.params.hostelId, roomNumber:req.body.roomNumber });
+  if(room) {
+    return next(new ErrorResponse("This room# already exists, Please choose another number#"))
+  }
 
-  let count = totalRooms + 1;
-  req.body.roomNumber = count;
 
-  const room = await Room.create(req.body);
+   room = await Room.create(req.body);
 
   res.status(200).json({
     success: true,

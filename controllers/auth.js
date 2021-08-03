@@ -182,6 +182,8 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
   user.save({ validateBeforeSave: false });
 
   // return token
-  sendTokenResponse(user, 200, res);
+  // sendTokenResponse(user, 200, res);
+
+  return res.send(`<h1>your email has been verified</h1>`);
 });
 
