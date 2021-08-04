@@ -190,17 +190,14 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
   });
 });
 exports.purchaseProduct = asyncHandler(async (req, res, next) => {
-  let shop
+  let shop = await Shop.findById(req.body.shop).lean();
+  if (!shop) {
+    return next(new ErrorResponse("No shop Found for this product"));
+  }
   for (x in req.body.product) {
     let product = await Product.findById(product[x]);
     if (!product) {
       return next(new ErrorResponse("Product not found"));
-    }
-    const shopId = product.shop;
-  
-     shop = await Shop.findById(shopId).lean();
-    if (!shop) {
-      return next(new ErrorResponse("No shop Found for this product"));
     }
     const { quantity, sold } = product;
     if (sold < quantity) {
@@ -233,7 +230,7 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
     const data = {
       amount: newTransaction.transaction.amount,
       transaction_id: newTransaction.transaction.id,
-      shop: shop._id,
+      shop: req.body.shop,
       product: req.body.product,
       publisher: shop.user,
       orderBy: req.body.user,
