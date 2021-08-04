@@ -191,6 +191,7 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
 });
 exports.purchaseProduct = asyncHandler(async (req, res, next) => {
   let shop = await Shop.findById(req.body.shop).lean();
+  let prod=[];
   if (!shop) {
     return next(new ErrorResponse("No shop Found for this product"));
   }
@@ -199,6 +200,7 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
     if (!product) {
       return next(new ErrorResponse("Product not found"));
     }
+    prod.push(product.name);
     const { quantity, sold } = product;
     if (sold < quantity) {
       
@@ -238,7 +240,7 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
     // await Order.create(data);
   
     await Order.create(data);
-    const message = `Your customer ${req.user.name} has purchased product ${product.name} from your shop ${shop.name}`;
+    const message = `Your customer ${req.user.name} has purchased product ${prod} from your shop ${shop.name}`;
     await Notification.create({
       user: req.user.id,
       publisher: shop.user,
