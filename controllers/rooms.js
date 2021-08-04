@@ -87,7 +87,7 @@ exports.addRoom = asyncHandler(async (req, res, next) => {
   }
   let room = await Room.findOne({ hostel: req.params.hostelId, roomNumber:req.body.roomNumber });
   if(room) {
-    return next(new ErrorResponse("This room# already exists, Please choose another number#"),400)
+    return next(new ErrorResponse("This room# already exists, Please choose another number#", 400));
   }
 
 
