@@ -257,12 +257,13 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
     const owner = await User.findById(shop.user);
     const token = owner.fcmToken;
     await admin.messaging().sendToDevice(token, payload);
-    const message1= `you have purchazed producs from the owner ${owner.email}`;
-    await sendMail({
-      mail:req.user.email,
-      subject: "Product Purchased",
-      message:message1
-    });
+    await admin.messaging().sendToDevice(req.user.fcmToken, payload);
+    // const message1= `you have purchazed producs from the owner ${owner.email}`;
+    // await sendMail({
+    //   mail:req.user.email,
+    //   subject: "Product Purchased",
+    //   message:message1
+    // });
 
     return res.status(201).json({
       success: true,
