@@ -104,6 +104,12 @@ exports.addRoom = asyncHandler(async (req, res, next) => {
 // @access     Private
 exports.updateRoom = asyncHandler(async (req, res, next) => {
   let room = await Room.findById(req.params.id);
+  const rm  =  await Room.findOne({hostel:room.hostel,roomNumber:req.body.roomNumber});
+  if(rm) {
+    return next(
+      new ErrorResponse(`No already exists with this number. try another number`, 404)
+    );
+  }
 
   if (!room) {
     return next(

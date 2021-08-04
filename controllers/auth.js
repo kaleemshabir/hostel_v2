@@ -28,7 +28,8 @@ exports.register = asyncHandler(async (req, res, next) => {
     email,
     password,
     role,
-    photo
+    photo,
+    contactNumber
   });
   // grab token and send to email
   const confirmEmailToken = user.generateEmailConfirmToken();
