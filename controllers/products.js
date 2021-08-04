@@ -251,7 +251,7 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
     var payload = {
       notification: {
         title: "Product Purchase",
-        body: `${product.name} purchased by  , ${req.user.name} successfully`,
+        body: `${prod} purchased by  , ${req.user.name} successfully`,
       },
     };
     const owner = await User.findById(shop.user);
