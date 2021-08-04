@@ -190,6 +190,7 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
   });
 });
 exports.purchaseProduct = asyncHandler(async (req, res, next) => {
+  let shop
   for (x in req.body.product) {
     let product = await Product.findById(product[x]);
     if (!product) {
@@ -197,7 +198,7 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
     }
     const shopId = product.shop;
   
-    const shop = await Shop.findById(shopId).lean();
+     shop = await Shop.findById(shopId).lean();
     if (!shop) {
       return next(new ErrorResponse("No shop Found for this product"));
     }
