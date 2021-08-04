@@ -196,7 +196,7 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse("No shop Found for this product"));
   }
   for (x in req.body.product) {
-    let product = await Product.findById(product[x]);
+    let product = await Product.findById(req.body.product[x]);
     if (!product) {
       return next(new ErrorResponse("Product not found"));
     }
