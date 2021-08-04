@@ -20,6 +20,6 @@ router
   .get(getProduct)
   .put(protect, authorize('publisher', 'admin'), updateProduct)
   .delete(protect, authorize('publisher', 'admin'), deleteProduct);
-  router.route("/:id/purchase").post(protect,purchaseProduct);
+  router.route("/purchase").post(protect,purchaseProduct);
 
 module.exports = router;
