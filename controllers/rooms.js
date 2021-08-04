@@ -9,6 +9,7 @@ const User = require("../models/User");
 const SeatBooked  = require("../models/SeatBooked");
 const Notification = require("../models/Notification");
 // const serviceAccount = require("../feroshgah.json");
+const sendMail = require("../utils/sendMail");
 const braintree = require("braintree");
 var gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
@@ -230,6 +231,12 @@ exports.BookRoom = async (req, res, next) => {
     const owner =  await User.findById(hostel.user);
     const token  = owner.fcmToken;
       await admin.messaging().sendToDevice(token, payload);
+      const message1= `you booked hostel seat in hostel ${hostel.name} from the owner ${owner.email}`;
+    await sendMail({
+      mail:req.user.email,
+      subject: "Seat Booked sucessfully",
+      message:message1
+    });
 
     return res.status(201).json({
       success: true,

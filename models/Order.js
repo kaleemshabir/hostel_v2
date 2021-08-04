@@ -17,10 +17,11 @@ const OrderSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "Shop",
   },
-  product: {
+  product: [{
+  
     type: mongoose.Schema.ObjectId,
     ref: "Product",
-  },
+  }],
   orderBy: {
     type: mongoose.Schema.ObjectId,
     ref: "User",

@@ -7,6 +7,7 @@ const admin = require("firebase-admin");
 const braintree = require("braintree");
 const Notification = require('../models/Notification');
 const User = require("../models/User");
+const sendMail = require("../utils/sendMail");
 var gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
   merchantId: process.env.BRAINTREE_MERCHANT_ID,
@@ -189,18 +190,29 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
   });
 });
 exports.purchaseProduct = asyncHandler(async (req, res, next) => {
-  let product = await Product.findById(req.params.id);
-  if (!product) {
-    return next(new ErrorResponse("Product not found"));
+  for (x in req.body.product) {
+    let product = await Product.findById(product[x]);
+    if (!product) {
+      return next(new ErrorResponse("Product not found"));
+    }
+    const shopId = product.shop;
+  
+    const shop = await Shop.findById(shopId).lean();
+    if (!shop) {
+      return next(new ErrorResponse("No shop Found for this product"));
+    }
+    const { quantity, sold } = product;
+    if (sold < quantity) {
+      
+      product.quantity = product.quantity - 1;
+      await product.save();
+    } else {
+      return res
+        .status(400)
+        .json({ success: false, message: "OOPs!,Stock is empty" });
+    }
   }
-  const shopId = product.shop;
-
-  const shop = await Shop.findById(shopId).lean();
-  if (!shop) {
-    return next(new ErrorResponse("No shop Found for this product"));
-  }
-  const { quantity, sold } = product;
-  if (sold < quantity) {
+  
     const nonceFromTheClient = req.body.paymentMethodNonce;
     const amount = req.body.amount;
     const newTransaction = await gateway.transaction.sale({
@@ -221,14 +233,13 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
       amount: newTransaction.transaction.amount,
       transaction_id: newTransaction.transaction.id,
       shop: shop._id,
-      product: req.params.id,
+      product: req.body.product,
       publisher: shop.user,
       orderBy: req.body.user,
     };
     // await Order.create(data);
-    product.quantity = product.quantity - 1;
+  
     await Order.create(data);
-    await product.save();
     const message = `Your customer ${req.user.name} has purchased product ${product.name} from your shop ${shop.name}`;
     await Notification.create({
       user: req.user.id,
@@ -246,14 +257,16 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
     const owner = await User.findById(shop.user);
     const token = owner.fcmToken;
     await admin.messaging().sendToDevice(token, payload);
+    const message1= `you have purchazed producs from the owner ${owner.email}`;
+    await sendMail({
+      mail:req.user.email,
+      subject: "Product Purchased",
+      message:message1
+    });
 
     return res.status(201).json({
       success: true,
       message: "Product purchased successfully",
     });
-  } else {
-    return res
-      .status(400)
-      .json({ success: false, message: "OOPs!, Stock is empty" });
-  }
+  
 });
