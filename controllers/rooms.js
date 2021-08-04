@@ -237,12 +237,13 @@ exports.BookRoom = async (req, res, next) => {
     const owner =  await User.findById(hostel.user);
     const token  = owner.fcmToken;
       await admin.messaging().sendToDevice(token, payload);
-      const message1= `you booked hostel seat in hostel ${hostel.name} from the owner ${owner.email}`;
-    await sendMail({
-      mail:req.user.email,
-      subject: "Seat Booked sucessfully",
-      message:message1
-    });
+      await admin.messaging().sendToDevice(req.user.token, payload);
+      // const message1= `you booked hostel seat in hostel ${hostel.name} from the owner ${owner.email}`;
+    // await sendMail({
+    //   mail:req.user.email,
+    //   subject: "Seat Booked sucessfully",
+    //   message:message1
+    // });
 
     return res.status(201).json({
       success: true,
