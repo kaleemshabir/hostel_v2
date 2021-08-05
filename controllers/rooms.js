@@ -184,7 +184,7 @@ exports.BookRoom = async (req, res, next) => {
   if (room.roommats.includes(req.user.id)) {
     return res
       .status(400)
-      .json({ success: false, message: "Already booked this room" });
+      .json({ success: false, message: "you Already booked this room" });
   }
   if (!room) {
     return next(new ErrorResponse(`Room not found with this ${req.params.id}`));

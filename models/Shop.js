@@ -20,24 +20,6 @@ const ShopSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add an address'],
   },
-  items:{
-    type: Array,
-    default:[]
-  },
-  orders: [
-    {
-      orderedBy: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User',
-        required: true,
-      },
-      items: {
-        type: Array,
-        default: []
-      }
-    }
-  ],
- 
   longitude: String,
   latitude: String,
   town: {

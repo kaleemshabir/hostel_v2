@@ -77,17 +77,17 @@ exports.createHostel = asyncHandler(async (req, res, next) => {
   req.body.user = req.user.id;
 
   // Check for published hostel
-  const publishedHostel = await Hostel.findOne({ user: req.body.user });
+  // const publishedHostel = await Hostel.findOne({ user: req.body.user });
 
   // if the user is not an admin, they can only add one hostel
-  if (publishedHostel && req.user.role !== "admin") {
-    next(
-      new ErrorResponse(
-        `The user with ID ${req.user.id} has already published a hostel`,
-        400
-      )
-    );
-  }
+  // if (publishedHostel && req.user.role !== "admin") {
+  //   next(
+  //     new ErrorResponse(
+  //       `The user with ID ${req.user.id} has already published a hostel`,
+  //       400
+  //     )
+  //   );
+  // }
   const hostel = await Hostel.create(req.body);
 
   res.status(201).json({

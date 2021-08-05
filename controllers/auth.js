@@ -21,7 +21,7 @@ exports.register = asyncHandler(async (req, res, next) => {
       message:"Email already exists, try another"
     })
   }
-
+  
   // Create user
    user = await User.create({
     name,
@@ -62,9 +62,15 @@ exports.login = asyncHandler(async (req, res, next) => {
   if (!email || !password) {
     return next(new ErrorResponse(`Please provide an email and password`, 400));
   }
+  user = await User.find({email:email, isEmailConfirmed:false});
+  if(user) {
+
+    return res.status(400).json({success:false, message:"Please check your email and click on given link to verify"});
+  }
+
 
   // Check for user
-  const user = await User.findOne({ email }).select('+password');
+   user = await User.findOne({ email }).select('+password');
   if (!user) {
     return next(new ErrorResponse('Invalid credetials ', 401));
   }
@@ -110,7 +116,7 @@ const sendTokenResponse = (user, statusCode, res) => {
 // @access      Private
 exports.getMe = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id);
-   const hostel = await Hostel.findOne({user: req.user.id});
+   const hostel = await Hostel.find({user: req.user.id});
    const shop = await Shop.findOne({user: req.user.id});
    const job = await Job.findOne({postedBy: req.user.id});
   res.status(200).json({ success: true, data:{ user, hostel, shop, job}} );
