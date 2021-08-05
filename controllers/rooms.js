@@ -175,20 +175,24 @@ exports.BookRoom = async (req, res, next) => {
   // const {title, body} = req.body;
  
   let room = await Room.findById(req.params.id);
+  if (!room) {
+    return next(new ErrorResponse(`Room not found with this ${req.params.id}`));
+  }
   const hostelId = room.hostel;
  
   const hostel = await Hostel.findById(hostelId);
   if (!hostel) {
     return new ErrorResponse("No hostel Found for this room")
   }
-  if (room.roommats.includes(req.user.id)) {
-    return res
-      .status(400)
-      .json({ success: false, message: "you Already booked this room" });
+  room = await Room.findOne({_id:req.params.id,hostel:hostelId, roommats:req.user.id});
+  if(room) {
+    return next(new ErrorResponse("You already booked room in this hostel"), 400);
   }
-  if (!room) {
-    return next(new ErrorResponse(`Room not found with this ${req.params.id}`));
-  }
+  // if (room.roommats.includes(req.user.id)) {
+  //   return res
+  //     .status(400)
+  //     .json({ success: false, message: "you Already booked this room" });
+  // }
 
   // room.roommats.length < room.seater
   if (room.roommats.length < room.seater) {

@@ -118,7 +118,7 @@ exports.getMe = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id);
    const hostel = await Hostel.find({user: req.user.id});
    const shop = await Shop.findOne({user: req.user.id});
-   const job = await Job.findOne({postedBy: req.user.id});
+   const job = await Job.find({postedBy: req.user.id});
   res.status(200).json({ success: true, data:{ user, hostel, shop, job}} );
 });
 

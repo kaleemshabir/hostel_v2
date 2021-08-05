@@ -76,7 +76,7 @@ router
    
     getJobs
   )
-  .post(protect, postJob);
+  .post( postJob);
   // authorize('publisher', 'admin')
   router.route('/search').get(search);
 router

@@ -15,7 +15,9 @@ cloudinary.config({
 // @route       GET /api/v1/jobs
 // @access      Public
 exports.getJobs = asyncHandler(async (req, res, next) => {
-  const jobs = await Job.find({}).sort([[("created_at", -1)]]);
+ let  d = new Date();
+  d = d.setDate(d.getDate()-30);
+  const jobs = await Job.find({createdAt:{$gte:d}}).sort([[("created_at", -1)]]);
   if (!jobs) {
     return next(new ErrorResponse("No job found", 404));
   }
