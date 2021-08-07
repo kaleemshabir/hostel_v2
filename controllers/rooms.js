@@ -28,12 +28,26 @@ var gateway = new braintree.BraintreeGateway({
 //@route        GET /api/v1/hostels/:hostelId/rooms
 // @access      Public
 exports.getrooms = asyncHandler(async (req, res, next) => {
+  
   if (req.params.hostelId) {
     const rooms = await Room.find({ hostel: req.params.hostelId }).populate({
       path: "roommats",
       select: "name contactNumber photo createdAt ",
     });
+    // const rooms = await Room.aggregate([
+    //   {
+    //     $match:{hostel:req.params.hostelId}
+    //   },
+    //   {
+    //     lookup:{
+    //       from:"users",
+    //       localField:"roommats",
+    //       foreignField:"_id",
+    //       as:"rommats"
 
+    //     }
+    //   }
+    // ])
     return res.status(200).json({
       success: true,
       count: rooms.length,
