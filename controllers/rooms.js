@@ -29,7 +29,10 @@ var gateway = new braintree.BraintreeGateway({
 // @access      Public
 exports.getrooms = asyncHandler(async (req, res, next) => {
   if (req.params.hostelId) {
-    const rooms = await Room.find({ hostel: req.params.hostelId });
+    const rooms = await Room.find({ hostel: req.params.hostelId }).populate({
+      path: "roommats",
+      select: "name contactNumber photo createdAt ",
+    });
 
     return res.status(200).json({
       success: true,

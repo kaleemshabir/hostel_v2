@@ -62,8 +62,9 @@ exports.login = asyncHandler(async (req, res, next) => {
   if (!email || !password) {
     return next(new ErrorResponse(`Please provide an email and password`, 400));
   }
-  user = await User.find({email:email, isEmailConfirmed:false});
-  if(user) {
+  user = await User.find({email:email, isEmailConfirmed:true});
+ 
+  if(!user) {
 
     return res.status(400).json({success:false, message:"Please check your email and click on given link to verify"});
   }
