@@ -11,6 +11,7 @@ const Notification = require("../models/Notification");
 // const serviceAccount = require("../feroshgah.json");
 const sendMail = require("../utils/sendMail");
 const braintree = require("braintree");
+const { ObjectId } = require("mongoose");
 var gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
   merchantId: process.env.BRAINTREE_MERCHANT_ID,
@@ -190,8 +191,10 @@ exports.deleteRoom = asyncHandler(async (req, res, next) => {
 //@access Public
 exports.BookRoom = async (req, res, next) => {
   // const {title, body} = req.body;
- 
-  let room = await Room.findById(req.params.id);
+ if(typeof req.params.id !==ObjectId){
+return res.status(400).json({success:false, message:"plz give me object id"})
+ }
+  let room = await Room.findOne({_id:req.params.id});
  
   if (!room) {
     return next(new ErrorResponse(`Room not found with this ${req.params.id}`));
