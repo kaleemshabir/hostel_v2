@@ -192,6 +192,7 @@ exports.BookRoom = async (req, res, next) => {
   // const {title, body} = req.body;
  
   let room = await Room.findById(req.params.id);
+ 
   if (!room) {
     return next(new ErrorResponse(`Room not found with this ${req.params.id}`));
   }
@@ -207,6 +208,7 @@ exports.BookRoom = async (req, res, next) => {
     {
      $match: { hostel: hostelId}
     },
+    
    {
     $project: {
       "hostel" : "$hostel",
@@ -227,7 +229,7 @@ exports.BookRoom = async (req, res, next) => {
   // }
 
   // room.roommats.length < room.seater
-  if (room.roommats.length < room.seater) {
+  if (room?.roommats?.length < room?.seater) {
     const nonceFromTheClient = req.body.paymentMethodNonce;
   const amount = req.body.amount;
   const newTransaction = await gateway.transaction.sale({
