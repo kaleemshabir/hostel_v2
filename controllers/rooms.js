@@ -285,3 +285,28 @@ exports.BookRoom = async (req, res, next) => {
     // };
   }
 };
+exports.RemoveUser = asyncHandler(async(req, res, next) => {
+  const {userId} = req.body;
+  const roomId= req.params.id;
+  let room = await Room.findById(roomId);
+if(!room) {
+  return next(new ErrorResponse("Room not found with given id", 400));
+}
+const {roommats} = room;
+const index = roommats.indexOf(userId);
+if (index > -1) {
+  roommats.splice(index, 1);
+  room.roommats =roommats
+  await room.save();
+}else {
+  return next(new ErrorResponse("Opps! Something went wrong"))
+}
+// console.log(typeof userId);
+// console.log(room.roommats
+
+return res.status(200).json({
+  success:true,
+  message:"User removed successfully from room"
+})
+
+})
