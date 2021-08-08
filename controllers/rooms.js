@@ -256,11 +256,11 @@ exports.BookRoom = async (req, res, next) => {
   // room.availableSeats= room.availableSeats-1;
   room.remaining_seats= room.remaining_seats-1;
    
-    room.roommats.push(req.user.id);
-    await room.save();
+    room?.roommats.push(req.user.id);
+    await room?.save();
 
     
-    const message = `Your customer ${req.user.name} has booked seat in room ${room.roomNumber} of hostel ${hostel.name}`;
+    const message = `Your customer ${req.user.name} has booked seat in room ${room?.roomNumber} of hostel ${hostel.name}`;
     await Notification.create({
       user: req.user.id,
       publisher: hostel.user,
@@ -275,7 +275,7 @@ exports.BookRoom = async (req, res, next) => {
     var payload1 = {
       notification: {
         title: "Room Booking",
-        body: `you booked room  ${room.roomNumber} of hostel ${hostel.name} successfully`,
+        body: `you booked room  ${room?.roomNumber} of hostel ${hostel.name} successfully`,
       },
     };
     const owner =  await User.findById(hostel.user);
