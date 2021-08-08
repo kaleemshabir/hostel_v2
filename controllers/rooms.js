@@ -202,8 +202,22 @@ exports.BookRoom = async (req, res, next) => {
   if (!hostel) {
     return new ErrorResponse("No hostel Found for this room")
   }
-  const isAlreadyBooked = await Room.find({hostel:hostelId, roommats:req.user.id});
-  if(isAlreadyBooked) {
+  // const isAlreadyBooked = await Room.find({hostel:hostelId, roommats:req.user.id});
+  const isAlreadyBooked = await Room.aggregate([
+    {
+     $match: { hostel: hostelId}
+    },
+   {
+    $project: {
+      "hostel" : "$hostel",
+      "hasRoommats" : {
+        $in: [req.user.id, "$roommats" ]
+      }
+    }
+  }
+  
+  ]);
+  if(isAlreadyBooked[0].hasRoommats) {
     return next(new ErrorResponse("You already booked room in this hostel", 400));
   }
   // if (room.roommats.includes(req.user.id)) {
