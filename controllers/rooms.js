@@ -191,9 +191,6 @@ exports.deleteRoom = asyncHandler(async (req, res, next) => {
 //@access Public
 exports.BookRoom = async (req, res, next) => {
   // const {title, body} = req.body;
- if(typeof req.params.id !==ObjectId){
-return res.status(400).json({success:false, message:"plz give me object id"})
- }
   let room = await Room.findOne({_id:req.params.id});
  
   if (!room) {
