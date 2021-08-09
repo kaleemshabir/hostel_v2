@@ -201,8 +201,17 @@ exports.BookRoom = async (req, res, next) => {
  
   const hostel = await Hostel.findById(hostelId);
   if (!hostel) {
-    return new ErrorResponse("No hostel Found for this room")
+    return next( new ErrorResponse("No hostel Found for this room"));
   }
+  const owner =  await User.findById(hostel.user);
+    const token  = owner.fcmToken;
+    const userToken = req.user.fcmToken;
+    if(!token) {
+      return next(new ErrorResponse("please provide fcm token of the owner"));
+    }
+    if(!userToken) {
+      return next(new ErrorResponse("please fcm token of the user"));
+    }
   // const isAlreadyBooked = await Room.find({hostel:hostelId, roommats:req.user.id});
   const isAlreadyBooked = await Room.aggregate([
     {
@@ -278,10 +287,9 @@ exports.BookRoom = async (req, res, next) => {
         body: `you booked room  ${room?.roomNumber} of hostel ${hostel.name} successfully`,
       },
     };
-    const owner =  await User.findById(hostel.user);
-    const token  = owner.fcmToken;
+    
       await admin.messaging().sendToDevice(token, payload);
-      await admin.messaging().sendToDevice(req.user.fcmToken, payload1);
+      await admin.messaging().sendToDevice(userToken, payload1);
       // const message1= `you booked hostel seat in hostel ${hostel.name} from the owner ${owner.email}`;
     // await sendMail({
     //   mail:req.user.email,
