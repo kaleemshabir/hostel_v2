@@ -80,12 +80,12 @@ exports.postJob = asyncHandler(async (req, res, next) => {
     company: req.body.company,
     employmentType: req.body.employmentType,
   };
-  let job = await Job.create(data);
+await Job.create(data);
 
   res.status(200).json({
     success: true,
     message: "Job posted successfully",
-    data: job,
+    data: {},
   });
 });
 
@@ -156,6 +156,10 @@ exports.deleteJob = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/jobs/:id/apply
 //@access Public
 exports.apply = asyncHandler(async (req, res, next) => {
+  let job = await Job.findById(req.params.id);
+  if (!job) {
+    return next(new ErrorResponse(`Job not found with this ${req.params.id}`));
+  }
   req.body.user = req.user.id;
   const photo = req.user.photo;
   const cv = req.body.filename;
@@ -181,10 +185,6 @@ exports.apply = asyncHandler(async (req, res, next) => {
         error: "ResourceNotFound"
       };
     }
-  let job = await Job.findById(req.params.id);
-  if (!job) {
-    return next(new ErrorResponse(`Job not found with this ${req.params.id}`));
-  }
 // const lo = `./public/cv/S{req.user.id}`;
 // var pdfImage = new PDFImage(lo);
 // console.log(pdfImage);
