@@ -48,7 +48,6 @@ const upload = multer({
     return callback;
   }
 });
-
 // var storage = multer.diskStorage({
 //   filename: function (req, file, callback) {
 //     const ext = file.mimetype.split("/")[1];
@@ -73,10 +72,9 @@ router.route('/my-jobs').get(protect, getJobsOwner);
 router
   .route('/')
   .get(
-   
     getJobs
   )
-  .post( postJob);
+  .post( protect,postJob);
   // authorize('publisher', 'admin')
   router.route('/search').get(search);
 router
