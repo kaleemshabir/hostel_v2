@@ -150,7 +150,7 @@ exports.updateRoom = asyncHandler(async (req, res, next) => {
     let rs = req.body.seater - room.seater;
     req.body.remaining_seats = room.remaining_seats+rs;
   }else if (room.seater >req.body.seater && room.roommats.length>req.body.seater) {
-    return next(new ErrorResponse("before updating the no. of seats, first remove previous roommats"));
+    return next(new ErrorResponse("before updating the no. of seats, first remove previous roommats",400));
   }else if(room.seater >req.body.seater && room.roommats.length<=req.body.seater){
   
 req.body.remaining_seats = req.body.seater- room.roommats.length;
