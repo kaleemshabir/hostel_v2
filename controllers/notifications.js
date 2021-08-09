@@ -9,8 +9,14 @@ exports.getNotifications = async (req, res) => {
     ]
   }
   const notifications = await Notification.find(query)
-    .populate("user", "name email photo contactNumber")
-    .select("-publisher")
+  .populate("user", "name email photo contactNumber")
+  .populate({
+    path:"cart",
+    populate:{
+      path:'product',
+      model:"Product",
+      select:'image name price '
+    }})
     .sort([['createdAt', -1]]);
   return res.status(200).json({
     success: true,
