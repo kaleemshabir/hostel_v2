@@ -1,7 +1,5 @@
 const Notification = require("../models/Notification");
 exports.getNotifications = async (req, res) => {
-  const type = req.query.type;
-
   const query = {
     $or: [
       {
