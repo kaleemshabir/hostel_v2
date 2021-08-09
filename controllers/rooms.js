@@ -290,6 +290,7 @@ exports.BookRoom = async (req, res, next) => {
       roomNumber: req.body.roomNumber,
       OwnerMessage: OwnerMessage,
       Usermessage: Usermessage,
+      no_of:"hostel"
     });
     var payload = {
       notification: {
