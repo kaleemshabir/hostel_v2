@@ -30,9 +30,7 @@ exports.getAllProducts = asyncHandler(async (req, res) => {
         {
           address: { $regex: req.body.search, $options: "i" },
         },
-        {
-          price: { $regex: req.body.search, $options: "i" },
-        },
+       
         {
           description: { $regex: req.body.search, $options: "i" },
         },
