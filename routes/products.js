@@ -18,8 +18,8 @@ router
 router
   .route('/:id')
   .get(getProduct)
-  .put(protect, authorize('publisher', 'admin'), updateProduct)
-  .delete(protect, authorize('publisher', 'admin'), deleteProduct);
+  .put(protect, authorize('publisher', 'admin','user'), updateProduct)
+  .delete(protect, authorize('publisher', 'admin','user'), deleteProduct);
   router.route("/purchase").post(protect,purchaseProduct);
 
 module.exports = router;

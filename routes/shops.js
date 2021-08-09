@@ -25,13 +25,13 @@ router.route('/search')
 .post( getShops);
 router
   .route('/') 
-  .post(protect, authorize('publisher', 'admin'), createShop);
+  .post(protect, authorize('publisher', 'admin','user'), createShop);
 router
   .route('/:id')
   .get(getShop)
-  .put(protect, authorize('publisher', 'admin'), updateShop)
-  .delete(protect, authorize('publisher', 'admin'), deleteShop);
-router.route("/:id/orders").get(protect, authorize("publisher", "admin"), getOrders)
+  .put(protect, authorize('publisher', 'admin','user'), updateShop)
+  .delete(protect, authorize('publisher', 'admin','user'), deleteShop);
+router.route("/:id/orders").get(protect, authorize("publisher", "admin",'user'), getOrders)
 
   router.route("/products")
   .get(getProducts);

@@ -14,6 +14,6 @@ router.route("/:id").get(protect, getSingleBookedSeat);
 router.route("/seat").post(protect, seatBooking).get(protect, getBookedSeats);
 router
   .route("/booked")
-  .get(protect, authorize("publisher", "admin"), getAllBookedSeatsOwner);
+  .get(protect, authorize("publisher", "admin","user"), getAllBookedSeatsOwner);
 
 module.exports = router;
