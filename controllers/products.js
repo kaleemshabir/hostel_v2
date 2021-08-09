@@ -60,9 +60,16 @@ exports.getAllProducts = asyncHandler(async (req, res) => {
   });
 });
 exports.getProducts = asyncHandler(async(req, res,next) => {
-  const products = await Product.find({shop:req.params.shopId});
+  const products = await Product.find({shop:req.params.shopId}) .populate({
+    path: "shop",
+  }).populate({
+    path:"user",
+    select:"name email contactNumber"
+  })
+  .sort([["created_at", -1]])
+  .lean();;
 
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     message:products.length>0?"Products found successfully":"No product found",
     data: products ||[],
@@ -267,20 +274,19 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
     // await Order.create(data);
   
     await Order.create(data);
-    const message = `Your customer ${req.user.name} has purchased product ${prod} from your shop ${shop.name}`;
+    const OwnerMessage = `Your customer ${req.user.name} has purchased product ${prod} from your shop ${shop.name}`;
+    const Usermessage = `You  has purchased products, ${prod} ,from shop ${shop.name}`;
     await Notification.create({
+      amount: newTransaction.transaction.amount,
+      transaction_id: newTransaction.transaction.id,
       user: req.user.id,
       publisher: shop.user,
-      message: message,
+      OwnerMessage: OwnerMessage,
+      Usermessage: Usermessage,
       no_of: "product",
+      cart: req.body.cart
     });
-    const message1 = `You  has purchased products, ${prod} ,from shop ${shop.name}`;
-    await Notification.create({
-      user: req.user.id,
-      publisher: shop.user,
-      message: message1,
-      no_of: "product",
-    });
+    
     // const token = user.fcmToken;
     var payload = {
       notification: {

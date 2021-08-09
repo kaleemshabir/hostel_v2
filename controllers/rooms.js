@@ -277,17 +277,16 @@ exports.BookRoom = async (req, res, next) => {
     await room?.save();
 
     
-    const message = `Your customer ${req.user.name} has booked seat in room ${room?.roomNumber} of hostel ${hostel.name}`;
+    const OwnerMessage = `Your customer ${req.user.name} has booked seat in room ${room?.roomNumber} of hostel ${hostel.name}`;
+    const Usermessage= `you booked hostel seat in hostel ${hostel.name} from the owner ${owner.email}`;
     await Notification.create({
       user: req.user.id,
       publisher: hostel.user,
-      message: message
-    });
-     const message1= `you booked hostel seat in hostel ${hostel.name} from the owner ${owner.email}`;
-     await Notification.create({
-      user: req.user.id,
-      publisher: hostel.user,
-      message: message1
+      amount: newTransaction.transaction.amount,
+      transaction_id: newTransaction.transaction.id,
+      roomNumber: req.body.roomNumber,
+      OwnerMessage: OwnerMessage,
+      Usermessage: Usermessage,
     });
     var payload = {
       notification: {
@@ -338,7 +337,7 @@ if (index > -1) {
   room.remaining_seats = room.remaining_seats +1 ;
   await room.save();
 }else {
-  return next(new ErrorResponse("Opps! Something went wrong"))
+  return next(new ErrorResponse("Opps! Something went wrong"));
 }
 
 return res.status(200).json({
