@@ -275,6 +275,12 @@ exports.BookRoom = async (req, res, next) => {
       publisher: hostel.user,
       message: message
     });
+     const message1= `you booked hostel seat in hostel ${hostel.name} from the owner ${owner.email}`;
+     await Notification.create({
+      user: req.user.id,
+      publisher: hostel.user,
+      message: message1
+    });
     var payload = {
       notification: {
         title: "Room Booking",
@@ -290,7 +296,6 @@ exports.BookRoom = async (req, res, next) => {
     
       await admin.messaging().sendToDevice(token, payload);
       await admin.messaging().sendToDevice(userToken, payload1);
-      // const message1= `you booked hostel seat in hostel ${hostel.name} from the owner ${owner.email}`;
     // await sendMail({
     //   mail:req.user.email,
     //   subject: "Seat Booked sucessfully",
