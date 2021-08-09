@@ -314,6 +314,7 @@ const index = roommats.indexOf(userId);
 if (index > -1) {
   roommats.splice(index, 1);
   room.roommats =roommats
+  room.remaining_seats = room.remaining_seats +1 ;
   await room.save();
 }else {
   return next(new ErrorResponse("Opps! Something went wrong"))
