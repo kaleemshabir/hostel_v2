@@ -43,16 +43,16 @@ router.route('/search')
 .post( getHostels)
 router
   .route('/')
-  .post(protect, authorize('publisher', 'admin'), createHostel);
+  .post(protect, authorize('publisher', 'admin', 'user'), createHostel);
 router
   .route('/:id')
   .get(getHostel)
-  .put(protect, authorize('publisher', 'admin'), updateHostel)
-  .delete(protect, authorize('publisher', 'admin'), deleteHostel);
+  .put(protect, authorize('publisher', 'admin', 'user'), updateHostel)
+  .delete(protect, authorize('publisher', 'admin', 'user'), deleteHostel);
 router.put(
   '/:id/photo',
   protect,
-  authorize('publisher', 'admin'),
+  authorize('publisher', 'admin', 'user'),
   upload.single('file'),
   hostelPhotoUpload
 );
