@@ -196,6 +196,7 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
   if (!shop) {
     return next(new ErrorResponse("No shop Found for this product"));
   }
+  const owner = await User.findById(shop.user);
   const token = owner.fcmToken;
   const userToken = req.user.fcmToken;
   if(!token || !userToken) {
@@ -273,14 +274,21 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
       message: message,
       no_of: "product",
     });
+    const message1 = `You  has purchased products, ${prod} ,from shop ${shop.name}`;
+    await Notification.create({
+      user: req.user.id,
+      publisher: shop.user,
+      message: message1,
+      no_of: "product",
+    });
     // const token = user.fcmToken;
     var payload = {
       notification: {
         title: "Product Purchase",
-        body: `${prod} purchased by  , ${req.user.name} successfully`,
+        body: `${prod}, purchased by  , ${req.user.name} successfully`,
       },
     };
-    const owner = await User.findById(shop.user);
+    
     
     await admin.messaging().sendToDevice(token, payload);
     await admin.messaging().sendToDevice(userToken, payload);
