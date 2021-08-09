@@ -145,11 +145,14 @@ exports.updateRoom = asyncHandler(async (req, res, next) => {
       )
     );
   }
+  
   if(room.seater < req.body.seater) {
-    req.body.remaining_seats = room.remaining_seats+(req.seater - room.seater);
+    
+    req.body.remaining_seats = room.remaining_seats+(req.body.seater - room.seater);
   }else if (room.seater >req.body.seater && room.roommats.length>req.body.seater) {
     return next(new ErrorResponse("before updating the no. of seats, first remove previous roommats"));
   }else if(room.seater >req.body.seater && room.roommats.length<req.body.seater){
+  
 req.body.remaining_seats = req.body.seater- room.roommats.length;
   }
 
