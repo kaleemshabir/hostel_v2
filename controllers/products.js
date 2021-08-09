@@ -204,7 +204,7 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
     const { quantity, sold } = product;
     if (sold < quantity) {
       
-      product.quantity = product.quantity - 1;
+      product.quantity = product.quantity - req.body.quantity;
       await product.save();
     } else {
       return res
