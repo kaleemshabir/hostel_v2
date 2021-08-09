@@ -1,6 +1,16 @@
 const Notification = require("../models/Notification");
 exports.getNotifications = async (req, res) => {
-  const notifications = await Notification.find({ publisher: req.user.id })
+  const type = req.query.type;
+
+  const query = {
+    $or: [
+      {
+      publisher: req.user.id 
+    },
+      {user: req.user.id }
+    ]
+  }
+  const notifications = await Notification.find(query)
     .populate("user", "name email photo contactNumber")
     .select("-publisher")
     .sort([['createdAt', -1]]);
