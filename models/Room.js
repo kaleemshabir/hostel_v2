@@ -24,10 +24,7 @@ const RoomSchema = new mongoose.Schema({
     required: [true, 'Please add no of seats in a rooms'],
   },
   roommats: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
-    }
+   String
   ],
   
   availableSeats: {
