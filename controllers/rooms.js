@@ -123,18 +123,18 @@ exports.addRoom = asyncHandler(async (req, res, next) => {
 // @access     Private
 exports.updateRoom = asyncHandler(async (req, res, next) => {
   let room = await Room.findById(req.params.id);
-  const rm  =  await Room.findOne({hostel:room.hostel,roomNumber:req.body.roomNumber});
-  if(rm) {
-    return next(
-      new ErrorResponse(`No already exists with this number. try another number`, 404)
-    );
-  }
-
   if (!room) {
     return next(
       new ErrorResponse(`No room with the id of ${req.params.id}`, 404)
     );
   }
+  const rm  =  await Room.findOne({hostel:room.hostel,roomNumber:req.body.roomNumber});
+  if(rm) {
+    return next(
+      new ErrorResponse(`Room already exists with this number. try another number`, 404)
+    );
+  }
+
 
   // Make sure user is room owner
   if (room.user.toString() !== req.user.id && req.user.role !== "admin") {
@@ -144,6 +144,13 @@ exports.updateRoom = asyncHandler(async (req, res, next) => {
         400
       )
     );
+  }
+  if(room.seater < req.body.seater) {
+    req.body.remaining_seats = room.remaining_seats+(req.seater - room.seater);
+  }else if (room.seater >req.body.seater && room.roommats.length>req.body.seater) {
+    return next(new ErrorResponse("before updating the no. of seats, first remove previous roommats"));
+  }else if(room.seater >req.body.seater && room.roommats.length<req.body.seater){
+req.body.remaining_seats = req.body.seater- room.roommats.length;
   }
 
   room = await Room.findByIdAndUpdate(req.params.id, req.body, {
