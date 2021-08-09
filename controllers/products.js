@@ -192,19 +192,44 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
 exports.purchaseProduct = asyncHandler(async (req, res, next) => {
   let shop = await Shop.findById(req.body.shop).lean();
   let prod=[];
+  let totalAmount=0;
   if (!shop) {
     return next(new ErrorResponse("No shop Found for this product"));
   }
-  for (x in req.body.product) {
-    let product = await Product.findById(req.body.product[x]);
+  const token = owner.fcmToken;
+  const userToken = req.user.fcmToken;
+  if(!token || !userToken) {
+    return next(new ErrorResponse("firebase token not found ", 400));
+  }
+  // for (x in req.body.product) {
+  //   let product = await Product.findById(req.body.product[x]);
+  //   if (!product) {
+  //     return next(new ErrorResponse("Product not found"));
+  //   }
+  //   prod.push(product.name);
+  //   const { quantity, sold } = product;
+  //   if (sold < quantity) {
+      
+  //     product.quantity = product.quantity - req.body.quantity;
+  //     await product.save();
+  //   } else {
+  //     return res
+  //       .status(400)
+  //       .json({ success: false, message: "OOPs!,Stock is empty" });
+  //   }
+  // }
+
+  //new logic goes here
+  for (x in req.body.cart) {
+    let product = await Product.findById(req.body.cart[x].product);
     if (!product) {
       return next(new ErrorResponse("Product not found"));
     }
     prod.push(product.name);
     const { quantity, sold } = product;
     if (sold < quantity) {
-      
-      product.quantity = product.quantity - req.body.quantity;
+      totalAmount= totalAmount+req.body.cart[x].price*req.body.cart[x].quantity
+      product.quantity = product.quantity - req.body.cart[x].quantity;
       await product.save();
     } else {
       return res
@@ -214,9 +239,9 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
   }
   
     const nonceFromTheClient = req.body.paymentMethodNonce;
-    const amount = req.body.amount;
+    // const amount = req.body.amount;
     const newTransaction = await gateway.transaction.sale({
-      amount: amount,
+      amount: totalAmount,
       paymentMethodNonce: nonceFromTheClient,
       options: {
         submitForSettlement: true,
@@ -233,9 +258,10 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
       amount: newTransaction.transaction.amount,
       transaction_id: newTransaction.transaction.id,
       shop: req.body.shop,
-      product: req.body.product,
+      // product: req.body.product,
       publisher: shop.user,
       orderBy: req.body.user,
+      cart: req.body.cart
     };
     // await Order.create(data);
   
@@ -255,9 +281,9 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
       },
     };
     const owner = await User.findById(shop.user);
-    const token = owner.fcmToken;
+    
     await admin.messaging().sendToDevice(token, payload);
-    await admin.messaging().sendToDevice(req.user.fcmToken, payload);
+    await admin.messaging().sendToDevice(userToken, payload);
     // const message1= `you have purchazed producs from the owner ${owner.email}`;
     // await sendMail({
     //   mail:req.user.email,

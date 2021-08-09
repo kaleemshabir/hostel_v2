@@ -17,11 +17,13 @@ const OrderSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "Shop",
   },
-  product: [{
-  
-    type: mongoose.Schema.ObjectId,
-    ref: "Product",
-  }],
+  cart:[
+{
+  product:String,
+  quantity: Number,
+  price:Number
+}]
+  ,
   orderBy: {
     type: mongoose.Schema.ObjectId,
     ref: "User",
