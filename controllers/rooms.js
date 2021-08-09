@@ -8,10 +8,7 @@ const admin = require("firebase-admin");
 const User = require("../models/User");
 const SeatBooked  = require("../models/SeatBooked");
 const Notification = require("../models/Notification");
-// const serviceAccount = require("../feroshgah.json");
-const sendMail = require("../utils/sendMail");
 const braintree = require("braintree");
-const { ObjectId } = require("mongoose");
 var gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
   merchantId: process.env.BRAINTREE_MERCHANT_ID,

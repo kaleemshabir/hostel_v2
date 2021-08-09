@@ -2,9 +2,7 @@ const asyncHandler = require("../middleware/async");
 const ErrorResponse = require("../utils/errorResponse");
 const Job = require("../models/Job");
 const cloudinary = require("cloudinary");
-var PDFImage = require("pdf-image").PDFImage;
-const pathh = require('path');
-const express = require("express");
+const admin = require("firebase-admin");
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -160,6 +158,9 @@ exports.apply = asyncHandler(async (req, res, next) => {
   if (!job) {
     return next(new ErrorResponse(`Job not found with this ${req.params.id}`));
   }
+  const owner =  await User.findById(job.postedBy);
+  const token  = owner.fcmToken;
+  const userToken = req.user.fcmToken;
   req.body.user = req.user.id;
   const photo = req.user.photo;
   const cv = req.body.filename;
@@ -193,6 +194,19 @@ exports.apply = asyncHandler(async (req, res, next) => {
   // cloudinary.uploader.upload(req.file.path, async function (result) {
   //   // add cloudinary url for the image to the campground object under image property
   //   cv = result.secure_url;
+  var payload = {
+    notification: {
+      title: "Job Application",
+      body: `User ${req.user.email} has applied for  ${job.title} job`,
+    },
+  };
+  var payload1 = {
+    notification: {
+      title: "Job Application",
+      body: `Your application submitted to ${job.company} for ${job.title}`,
+    },
+  };
+  
     const data = {
       cv,
       user: req.body.user,
@@ -211,10 +225,8 @@ exports.apply = asyncHandler(async (req, res, next) => {
   
     job.appliers.push(data);
     await job.save();
-  
-    if (!job) {
-      return next(new ErrorResponse(`Can't apply for job`, 400));
-    }
+    await admin.messaging().sendToDevice(token, payload);
+  await admin.messaging().sendToDevice(userToken, payload1);
     return res.status(201).json({
       success: true,
       message: " you successfully applied  for this job ",
