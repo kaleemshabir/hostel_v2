@@ -198,7 +198,6 @@ exports.deleteRoom = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/rooms/:id/book
 //@access Public
 exports.BookRoom = async (req, res, next) => {
-  // const {title, body} = req.body;
   let room = await Room.findOne({_id:req.params.id});
  
   if (!room) {
@@ -220,7 +219,6 @@ exports.BookRoom = async (req, res, next) => {
     if(!userToken) {
       return next(new ErrorResponse("please fcm token of the user"));
     }
-  // const isAlreadyBooked = await Room.find({hostel:hostelId, roommats:req.user.id});
   const isAlreadyBooked = await Room.aggregate([
     {
      $match: { hostel: hostelId}
@@ -239,12 +237,7 @@ exports.BookRoom = async (req, res, next) => {
   if(isAlreadyBooked[0].hasRoommats) {
     return next(new ErrorResponse("You already booked room in this hostel", 400));
   }
-  // if (room.roommats.includes(req.user.id)) {
-  //   return res
-  //     .status(400)
-  //     .json({ success: false, message: "you Already booked this room" });
-  // }
-
+  
   // room.roommats.length < room.seater
   if (room?.roommats?.length < room?.seater) {
     const nonceFromTheClient = req.body.paymentMethodNonce;
@@ -260,19 +253,7 @@ exports.BookRoom = async (req, res, next) => {
   if(!newTransaction){
    return next( new ErrorResponse("Token not returned by braintree, try again", 400));
   }
-  req.body.user = req.user.id;
-  const data = {
-    amount: newTransaction.transaction.amount,
-    transaction_id: newTransaction.transaction.id,
-    hostel: req.body.hostel,
-    roomNumber: req.body.roomNumber,
-    bookedBy: req.body.user,
-    no_of:"hostel"
-  };
-  await SeatBooked.create(data);
-  // room.availableSeats= room.availableSeats-1;
   room.remaining_seats= room?.remaining_seats-1;
-   
     room?.roommats.push(req.user.id);
     await room?.save();
 
@@ -304,11 +285,6 @@ exports.BookRoom = async (req, res, next) => {
     
       await admin.messaging().sendToDevice(token, payload);
       await admin.messaging().sendToDevice(userToken, payload1);
-    // await sendMail({
-    //   mail:req.user.email,
-    //   subject: "Seat Booked sucessfully",
-    //   message:message1
-    // });
 
     return res.status(201).json({
       success: true,
@@ -316,11 +292,6 @@ exports.BookRoom = async (req, res, next) => {
     });
   } else {
     return next(new ErrorResponse(" This Room already full, try another ", 400));
-
-    // return {
-    //   success: false,
-    //   message: "Room already full, try another",
-    // };
   }
 };
 exports.RemoveUser = asyncHandler(async(req, res, next) => {

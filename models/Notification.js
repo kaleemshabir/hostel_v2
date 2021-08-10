@@ -28,6 +28,9 @@ const NotificationSchema = new mongoose.Schema({
     trim: true,
     maxlength: [50, "Amount cannot be more than 50 characters"],
   },
+  shippingAddress: {
+type:String
+  },
   cart:[
     {
       product:String,
