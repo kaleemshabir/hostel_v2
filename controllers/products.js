@@ -214,7 +214,7 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
   for (x in req.body.cart) {
     let product = await Product.findById(req.body.cart[x].product);
     if (!product) {
-      return next(new ErrorResponse("Product not found"));
+      return next(new ErrorResponse(`Product not found with id of ${req.body.cart[x].product}`, 400));
     }
     prod.push(product.name);
     const { quantity, sold } = product;
