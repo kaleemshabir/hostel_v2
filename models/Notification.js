@@ -30,9 +30,9 @@ const NotificationSchema = new mongoose.Schema(
       maxlength: [50, "Amount cannot be more than 50 characters"],
     },
     shippingAddress: {
-      address: { type: String, required: [true, "Please provide address"] },
-      longitude: { type: String ||null , required: [true, "Please provide longitude"] },
-      latitude: { type: String ||null, required: [true, "Please provide latitude"] },
+      address: { type: String, },
+      longitude: { type: String },
+      latitude: { type: String  },
     },
     cart: [
       {
