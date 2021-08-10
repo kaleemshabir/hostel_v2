@@ -31,8 +31,8 @@ const NotificationSchema = new mongoose.Schema(
     },
     shippingAddress: {
       address: { type: String, required: [true, "Please provide address"] },
-      longitude: { type: String, required: [true, "Please provide longitude"] },
-      latitude: { type: String, required: [true, "Please provide latitude"] },
+      longitude: { type: String ||null , required: [true, "Please provide longitude"] },
+      latitude: { type: String ||null, required: [true, "Please provide latitude"] },
     },
     cart: [
       {
