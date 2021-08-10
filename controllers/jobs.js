@@ -1,5 +1,6 @@
 const asyncHandler = require("../middleware/async");
 const ErrorResponse = require("../utils/errorResponse");
+const User = require("../models/User");
 const Job = require("../models/Job");
 const cloudinary = require("cloudinary");
 const admin = require("firebase-admin");

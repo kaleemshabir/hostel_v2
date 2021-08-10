@@ -27,9 +27,6 @@ exports.getAllProducts = asyncHandler(async (req, res) => {
     query = {
       $or: [
         { name: { $regex: req.body.search, $options: "i" } },
-        {
-          address: { $regex: req.body.search, $options: "i" },
-        },
        
         {
           description: { $regex: req.body.search, $options: "i" },
