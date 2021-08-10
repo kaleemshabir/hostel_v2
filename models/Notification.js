@@ -1,47 +1,52 @@
 const mongoose = require("mongoose");
 
-const NotificationSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.ObjectId,
-    ref:"User"
+const NotificationSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+    },
+    publisher: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+    },
+    OwnerMessage: {
+      type: String,
+    },
+    Usermessage: {
+      type: String,
+    },
+    roomNumber: {
+      type: String,
+    },
+    transaction_id: {
+      type: String,
+      required: [true, "Please transaction id"],
+    },
+    amount: {
+      type: Number,
+      required: [true, "Please add a amount"],
+      trim: true,
+      maxlength: [50, "Amount cannot be more than 50 characters"],
+    },
+    shippingAddress: {
+      address: { type: String, required: [true, "Please provide address"] },
+      longitude: { type: String, required: [true, "Please provide longitude"] },
+      latitude: { type: String, required: [true, "Please provide latitude"] },
+    },
+    cart: [
+      {
+        product: String,
+        quantity: Number,
+        price: Number,
+      },
+    ],
+    no_of: {
+      type: String,
+      enum: ["product", "hostel"],
+    },
   },
-  publisher: {
-    type: mongoose.Schema.ObjectId,
-    ref: "User"
-  },
-  OwnerMessage: {
-    type: String
-  },
-  Usermessage: {
-    type: String
-  },
-  roomNumber:{
-    type: String
-  },
-  transaction_id: {
-    type: String,
-    required: [true, "Please transaction id"],
-  },
-  amount: {
-    type: Number,
-    required: [true, "Please add a amount"],
-    trim: true,
-    maxlength: [50, "Amount cannot be more than 50 characters"],
-  },
-  shippingAddress: {
-type:String
-  },
-  cart:[
-    {
-      product:String,
-      quantity: Number,
-      price:Number
-    }],
-  no_of:{
-    type: String,
-    enum: ["product", "hostel"]
-  }
-  
-},{timestamps:true});
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("Notification", NotificationSchema);

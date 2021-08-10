@@ -206,6 +206,9 @@ exports.purchaseProduct = asyncHandler(async (req, res, next) => {
   if(!shippingAddress) {
     return next(new ErrorResponse("Please provide shipping address", 400));
   }
+  if(!shippingAddress?.address || !shippingAddress?.latitude || !shippingAddress?.longitude){
+    return next(new ErrorResponse("Please provide shipping address in proper formate", 400));
+  }
 
   //new logic goes here
   for (x in req.body.cart) {
