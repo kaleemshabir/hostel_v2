@@ -60,7 +60,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   if (!email || !password) {
     return next(new ErrorResponse(`Please provide an email and password`, 400));
   }
-  user = await User.find({email:email, isEmailConfirmed:true});
+  user = await User.findOne({email:email, isEmailConfirmed:true});
  
   if(!user) {
 
